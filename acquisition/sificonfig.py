@@ -1,3 +1,6 @@
+# enter sifi device MAC addresses here in the format "name": "mac_address"
+# The names should match the OSC addresses used in the the LightHearted script
+
 mac_dict = {
 }
 
