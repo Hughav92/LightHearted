@@ -7,32 +7,32 @@ This document provides an overview of the main classes and functions in the `acq
 ## acquisition/fifo_buffer.py
 
 ### class FIFOBuffer
-"""
+
 A fixed-size First-In-First-Out (FIFO) buffer for numeric data, supporting
 efficient enqueuing, transformation, and statistical operations.
-"""
+
 
 #### Methods:
 - **__init__(size: int)**
-    """
+    
     Initialize the FIFO buffer with a given maximum size.
 
     Parameters
     ----------
     size : int
         The maximum size of the buffer.
-    """
+    
 - **is_full() -> bool**
-    """
+    
     Check if the buffer is full.
 
     Returns
     -------
     bool
         True if the buffer is full, False otherwise.
-    """
+    
 - **enqueue(items)**
-    """
+    
     Add an item or a list of items to the buffer.
     Automatically removes the oldest items if the buffer exceeds the size.
 
@@ -40,36 +40,36 @@ efficient enqueuing, transformation, and statistical operations.
     ----------
     items : list or np.ndarray or int or float
         The items to add to the buffer.
-    """
+    
 - **get_buffer() -> np.ndarray**
-    """
+    
     Returns the buffer as a NumPy array.
 
     Returns
     -------
     np.ndarray
         The current buffer.
-    """
+    
 - **get_size() -> int**
-    """
+    
     Returns the number of elements in the buffer.
 
     Returns
     -------
     int
         The number of elements in the buffer.
-    """
+    
 - **get_max_size() -> int**
-    """
+    
     Returns the maximum size of the buffer.
 
     Returns
     -------
     int
         The maximum size of the buffer.
-    """
+    
 - **set_buffer(new_buffer, resize_buffer=True)**
-    """
+    
     Set the buffer to a new NumPy array or list.
 
     Parameters
@@ -78,22 +78,22 @@ efficient enqueuing, transformation, and statistical operations.
         The new buffer to set.
     resize_buffer : bool, optional
         If True, resize the buffer size to match the new buffer length.
-    """
+    
 - **_calculate_centre_index() -> int**
-    """
+    
     Calculate the centre index of the buffer based on its size.
 
     Returns
     -------
     int
         The centre index of the buffer.
-    """
+    
 - **clear_buffer()**
-    """
+    
     Clear the buffer by resetting it to an empty array.
-    """
+    
 - **transform(functions, args_list=None, kwargs_list=None, output_index=None)**
-    """
+    
     Apply a chain of functions to the buffer and return the result.
     Supports using 'min', 'max', 'mean', 'std', 'median' as special values in kwargs.
 
@@ -112,9 +112,9 @@ efficient enqueuing, transformation, and statistical operations.
     -------
     np.ndarray or object
         The result after applying all functions in sequence to the buffer.
-    """
+    
 - **transform_tick(functions, args_list=None, kwargs_list=None, mode="update", interval=1000, output_index=None)**
-    """
+    
     Only perform transform if the buffer has changed since the last call ("update" mode),
     or at a fixed interval in ms ("time" mode).
 
@@ -138,14 +138,14 @@ efficient enqueuing, transformation, and statistical operations.
     -------
     np.ndarray or None
         The result of transform if triggered, else None.
-    """
+    
 
 ---
 
 ## csv_simulator/csv_simulator.py
 
 - **load_csvs(filepath=None, col=None)**
-    """
+    
     Load CSV files from a directory and extract a specified column.
 
     Parameters
@@ -159,9 +159,9 @@ efficient enqueuing, transformation, and statistical operations.
     -------
     dict
         Dictionary mapping filenames to column data.
-    """
+    
 - **read_csvs(csv_dict, clients, buffer_size=1)**
-    """
+    
     Read CSV data and send it to OSC clients in buffer-sized chunks.
 
     Parameters
@@ -172,55 +172,55 @@ efficient enqueuing, transformation, and statistical operations.
         List of OSC clients.
     buffer_size : int, optional
         Number of samples per message.
-    """
+    
 - **main()**
-    """
+    
     Main entry point for running the CSV simulator.
-    """
+    
 - **csv_sim()**
-    """
+    
     Alias for `main()`.
-    """
+    
 
 ---
 
 ## derivation/mapping_array.py
 
 ### class MappingArray
-"""
+
 A class for handling derived features from multiple FIFO buffers to be mapped to a lighting array.
-"""
+
 
 #### Methods:
 - **__init__(buffer_dict)**
-    """
+    
     Initialize the MappingArray with a dictionary of FIFO buffers.
 
     Parameters
     ----------
     buffer_dict : dict[str, np.ndarray]
         A dictionary where keys are OSC addresses and values are numpy arrays representing the buffers.
-    """
+    
 - **set_positions(dict)**
-    """
+    
     Set the positions of the buffers in the array based on the provided dictionary.
 
     Parameters
     ----------
     dict : dict[str, int]
         A dictionary where keys are OSC addresses and values are their respective positions in the array.
-    """
+    
 - **get_array()**
-    """
+    
     Get the current state of the array.
 
     Returns
     -------
     np.ndarray
         The current state of the array.
-    """
+    
 - **get_values(keys=None)**
-    """
+    
     Get the values of the array for specified keys.
 
     Parameters
@@ -232,9 +232,9 @@ A class for handling derived features from multiple FIFO buffers to be mapped to
     -------
     np.ndarray
         The values corresponding to the specified keys.
-    """
+    
 - **update_array(reduction_functions, args=(), kwargs=None, output_index=None)**
-    """
+    
     Update the array by applying the same reduction function(s) to all buffers.
 
     Parameters
@@ -247,9 +247,9 @@ A class for handling derived features from multiple FIFO buffers to be mapped to
         Keyword arguments to pass to the function(s).
     output_index : int or None, optional
         Which output to use if the function returns multiple outputs. If None, use the entire result.
-    """
+    
 - **update_array_ticks(reduction_functions, args=(), kwargs=None, mode="update", interval=1000, output_index=None)**
-    """
+    
     Update the array only if any buffer has changed ("update" mode), or at a fixed interval ("time" mode).
 
     Parameters
@@ -272,9 +272,9 @@ A class for handling derived features from multiple FIFO buffers to be mapped to
     -------
     bool
         True if the array was updated, False otherwise.
-    """
+    
 - **spatial_expansion(expansion_function, args=None, kwargs=None, return_expansion=False, expansion_name=None)**
-    """
+    
     Apply a spatial expansion function to the array.
 
     Parameters
@@ -294,20 +294,20 @@ A class for handling derived features from multiple FIFO buffers to be mapped to
     -------
     np.ndarray or None
         The expanded array if return_expansion is True, otherwise None.
-    """
+    
 
 ---
 
 ## mapping/mapper.py
 
 ### class ContinuousMapper
-"""
+
 A class for mapping derived features from a mapping array to a lighting array.
-"""
+
 
 #### Methods:
 - **__init__(mapping_array, lighting_array, functions, args, kwargs)**
-    """
+    
     Initialize the ContinuousMapper with a dictionary of FIFO buffers and a lighting array.
 
     Parameters
@@ -316,18 +316,18 @@ A class for mapping derived features from a mapping array to a lighting array.
         A dictionary where keys are OSC addresses and values are FIFOBuffers representing the buffers.
     lighting_array : LightingArray
         An instance of LightingArray to map the derived features to.
-    """
+    
 - **set_functions(functions, args=None, kwargs=None)**
-    """
+    
     Set the mapping functions for the ContinuousMapper.
 
     Parameters
     ----------
     functions : dict[str, callable]
         A dictionary where keys are OSC addresses and values are functions to map the derived features.
-    """
+    
 - **apply_mapping(parameter, expansion_name=None)**
-    """
+    
     Apply the mapper's functions to the mapping array (or chosen expansion) and set the lighting array.
 
     Parameters
@@ -341,17 +341,17 @@ A class for mapping derived features from a mapping array to a lighting array.
     ------
     ValueError
         If the number or shape of the outputs does not fit the parameter.
-    """
+    
 
 ### class TriggerMapper
-"""
+
 A class for mapping temporal triggers from a reference buffer and a query buffer (FIFOBuffer, np.ndarray, or list)
 to actions on a lighting array. Supports a chain of trigger functions.
-"""
+
 
 #### Methods:
 - **__init__(reference_buffer, query_buffer, trigger_functions, action_function, ...)**
-    """
+    
     Initialize the TriggerMapper.
 
     Parameters
@@ -372,9 +372,9 @@ to actions on a lighting array. Supports a chain of trigger functions.
         Positional arguments for the action function.
     action_kwargs : dict, optional
         Keyword arguments for the action function.
-    """
+    
 - **set_trigger_functions(trigger_functions, trigger_args=None, trigger_kwargs=None)**
-    """
+    
     Set the trigger function chain and its arguments. The final function must return a bool.
 
     Parameters
@@ -385,9 +385,9 @@ to actions on a lighting array. Supports a chain of trigger functions.
         List of positional argument tuples for each trigger function.
     trigger_kwargs : list, optional
         List of keyword argument dicts for each trigger function.
-    """
+    
 - **set_action_function(action_function, action_args=(), action_kwargs=None)**
-    """
+    
     Set the action (mapping) function and its arguments.
 
     Parameters
@@ -398,25 +398,25 @@ to actions on a lighting array. Supports a chain of trigger functions.
         Positional arguments for the action function.
     action_kwargs : dict, optional
         Keyword arguments for the action function.
-    """
+    
 - **run()**
-    """
+    
     Continuously check for triggers and execute actions.
-    """
+    
 
 ---
 
 ## mapping/lighting_array.py
 
 ### class LightingArray
-"""
+
 LightingArray represents a collection of lighting fixtures (LEDs) and their color/intensity states.
 Supports RGBW color channels, anchor points for mapping, and provides methods to update and retrieve channel values.
-"""
+
 
 #### Methods:
 - **__init__(fixtures, anchors=None)**
-    """
+    
     Initialize the LightingArray with fixtures and anchors.
 
     Parameters
@@ -425,54 +425,54 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
         A list or array of fixture IDs (LED indices).
     anchors : list or np.ndarray, optional
         A list or array of anchor IDs (LED indices used as mapping anchors).
-    """
+    
 - **set_anchors(new_anchors)**
-    """
+    
     Set the anchors for the lighting array and update anchor positions.
 
     Parameters
     ----------
     new_anchors : list or np.ndarray
         A list or array of new anchor IDs.
-    """
+    
 - **get_anchor_positions()**
-    """
+    
     Get the positions of the anchors in the fixture array.
 
     Returns
     -------
     np.ndarray
         An array of anchor positions (indices in the fixture array).
-    """
+    
 - **update_anchor_positions(new_anchor_positions)**
-    """
+    
     Set the positions of the anchors in the fixture array.
 
     Parameters
     ----------
     new_anchor_positions : np.ndarray
         An array of new anchor positions (indices in the fixture array).
-    """
+    
 - **update_intensities(new_intensities)**
-    """
+    
     Update the intensities of the fixtures (brightness for each LED).
 
     Parameters
     ----------
     new_intensities : np.ndarray
         An array of new intensity values for the fixtures.
-    """
+    
 - **update_red(new_red)**, **update_green(new_green)**, **update_blue(new_blue)**, **update_white(new_white)**
-    """
+    
     Update the respective color channel values of the fixtures.
 
     Parameters
     ----------
     new_red/new_green/new_blue/new_white : np.ndarray
         An array of new channel values for the fixtures.
-    """
+    
 - **update_rgb(new_red, new_green, new_blue)**
-    """
+    
     Update the RGB channel values of the fixtures.
 
     Parameters
@@ -483,9 +483,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
         An array of new green channel values for the fixtures.
     new_blue : np.ndarray
         An array of new blue channel values for the fixtures.
-    """
+    
 - **update_rgbw(new_red, new_green, new_blue, new_white)**
-    """
+    
     Update the RGBW channel values of the fixtures.
 
     Parameters
@@ -498,27 +498,27 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
         An array of new blue channel values for the fixtures.
     new_white : np.ndarray
         An array of new white channel values for the fixtures.
-    """
+    
 - **get_intensities()**, **get_rgb()**, **get_rgbw()**
-    """
+    
     Get the current channel values of the fixtures.
 
     Returns
     -------
     np.ndarray or tuple
         The current channel values.
-    """
+    
 - **get_previous_intensities()**, **get_previous_rgb()**, **get_previous_rgbw()**
-    """
+    
     Get the previous channel values of the fixtures.
 
     Returns
     -------
     np.ndarray or tuple
         The previous channel values.
-    """
+    
 - **send_command(func, *args, **kwargs)**
-    """
+    
     Send a command to the lighting system using a function from a lighting API.
 
     Parameters
@@ -535,14 +535,14 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     Returns
     -------
     The result of the called function.
-    """
+    
 
 ---
 
 ## mapping/mapping_functions.py
 
 - **interpolate_1d(input_array, output_size, original_indices)**
-    """
+    
     Perform 1D interpolation to map input array values to a specified output size.
 
     Parameters
@@ -558,40 +558,40 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     np.ndarray
         The interpolated output array.
-    """
+    
 - **fill_1d(input_array, output_size, input_value)**
-    """
+    
     Fill a 1D array to a specified size with a given value.
-    """
+    
 - **dimensionality_expansion(x, channel_functions, channel_kwargs_list=None)**
-    """
+    
     Expand the dimensionality of an array using channel functions.
-    """
+    
 - **identity(x)**, **sine(x)**, **cosine(x)**, **offset(x, offset)**, **scale(x, scale)**, **range_scaler(x, new_min, new_max, old_min=None, old_max=None)**, **zeros(x)**, **ones(x)**, **flip(x)**, **minus(x)**, **flip_range(x, min, max)**
-    """
+    
     Various array transformation utilities.
-    """
+    
 
 ### class PeakCrossesIndexTrigger
 - **__init__(index)**
-    """
+    
     Initialize with an index.
-    """
+    
 - **__call__(signal_buffer, peaks, auto_index=True)**
-    """
+    
     Returns True if the minimum distance from any peak to the index is less than the previous minimum distance.
-    """
+    
 - **update_index(new_index)**
-    """
+    
     Update the index for the trigger.
-    """
+    
 
 ---
 
 ## utils/utils.py
 
 - **find_nearest(query, reference)**
-    """
+    
     Find the nearest value in a reference array to a query value.
 
     Parameters
@@ -605,9 +605,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     tuple[int, float]
         A tuple containing the index of the nearest value and the distance to it.
-    """
+    
 - **sectosamp(sec, sr)**
-    """
+    
     Calculates the number of samples in a given number of seconds provided a sample rate.
 
     Parameters
@@ -621,9 +621,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     int
         The number of samples, rounded down to the nearest integer.
-    """
+    
 - **scaler(array, new_min, new_max, old_min=None, old_max=None)**
-    """
+    
     A simple linear scaler that scales an array to a given range.
 
     Parameters
@@ -643,9 +643,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     np.ndarray
         The scaled array.
-    """
+    
 - **filter(sig, order, cf, type, fs)**
-    """
+    
     Apply a Butterworth filter to a signal.
 
     Parameters
@@ -665,9 +665,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     np.ndarray
         The filtered signal.
-    """
+    
 - **moving_average(sig, window)**
-    """
+    
     Apply a moving average filter to a signal.
 
     Parameters
@@ -681,9 +681,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     np.ndarray
         The filtered signal.
-    """
+    
 - **vector_magnitude(coords)**
-    """
+    
     Calculate the magnitude of a vector representing points in Cartesian coordinate space.
 
     Parameters
@@ -695,9 +695,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     float
         The vector magnitude.
-    """
+    
 - **initiate_client(ip=None, port=None)**
-    """
+    
     Initialize a UDP client for sending OSC messages.
 
     Parameters
@@ -711,9 +711,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     SimpleUDPClient
         The initialized UDP client.
-    """
+    
 - **sleep(duration, get_now=time.perf_counter)**
-    """
+    
     Custom sleep function with high accuracy.
 
     Parameters
@@ -722,9 +722,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
         The duration to sleep in seconds.
     get_now : callable, optional
         A function to get the current time. Defaults to time.perf_counter.
-    """
+    
 - **ramp_value(start, end, elapsed_time, duration)**
-    """
+    
     Calculate the ramped value based on elapsed time and duration.
 
     Parameters
@@ -742,9 +742,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     float
         The ramped value.
-    """
+    
 - **osc_to_buffer_handler_factory(buffer_dict)**
-    """
+    
     Create a handler function to enqueue OSC messages into a FIFO buffer.
 
     Parameters
@@ -756,9 +756,9 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     -------
     callable
         A handler function for OSC messages.
-    """
+    
 - **setup_osc_server(ip, port, osc_addresses, buffer_dict)**
-    """
+    
     Set up an OSC server to receive messages and enqueue them into buffers.
 
     Parameters
@@ -771,19 +771,19 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
         A list of OSC addresses to listen to.
     buffer_dict : dict
         A dictionary mapping OSC addresses to FIFOBuffer objects.
-    """
+    
 - **process_osc()**
-    """
+    
     Process OSC messages.
-    """
+    
 - **terminate_osc()**
-    """
+    
     Terminate the OSC server.
-    """
+    
 - **osc_loop()**
-    """
+    
     Continuously process OSC messages.
-    """
+    
 
 ---
 
