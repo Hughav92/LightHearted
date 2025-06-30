@@ -78,6 +78,17 @@ class FIFOBuffer:
         """
         return len(self.buffer)
     
+    def get_max_size(self) -> int:
+        """
+        Returns the maximum size of the buffer.
+
+        Returns
+        -------
+        int
+            The maximum size of the buffer.
+        """
+        return self.size
+    
     def set_buffer(self, new_buffer: np.ndarray | list, resize_buffer=True) -> None:
         """
         Set the buffer to a new NumPy array or list.
@@ -91,13 +102,14 @@ class FIFOBuffer:
         """
         if not isinstance(new_buffer, (np.ndarray, list)):
             raise TypeError("new_buffer must be a numpy array or a list")
-        self.buffer = np.array(new_buffer, dtype=float)
-        if self.buffer.ndim > 1:
-            self.buffer = self.buffer.flatten()
+        self.clear_buffer()
         if resize_buffer:
-            self.size = len(self.buffer)
+            self.size = len(new_buffer)
         if self.size < 0:
             raise ValueError("Buffer size must be at least 0")
+        self.enqueue(new_buffer)
+        if self.buffer.ndim > 1:
+            self.buffer = self.buffer.flatten()
         self.centre_index = self._calculate_centre_index()
         self._version += 1
 
@@ -148,7 +160,7 @@ class FIFOBuffer:
             kwargs_list = [{}] * len(functions)
 
         values = np.nan_to_num(self.buffer, nan=0, posinf=1, neginf=-1)
-        # Apply each function in the chain, substituting stats if needed
+
         for i, func in enumerate(functions):
             args = args_list[i] if i < len(args_list) else ()
             kwargs = kwargs_list[i].copy() if i < len(kwargs_list) else {}

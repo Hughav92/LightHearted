@@ -26,7 +26,6 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
     original_indices = np.array(original_indices)
     input_array = np.array(input_array)
 
-    # Calculate the positions in the output array corresponding to the input array values
     input_size = len(input_array)
 
     if original_indices[0] > 0 and original_indices[-1] < output_size - 1:
@@ -46,18 +45,15 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
     else:
         output_array = np.zeros(output_size)
 
-    # First, map the original input array values to the specified output indices
     for i in range(input_size):
         output_array[original_indices[i]] = input_array[i]
     
-    # Perform linear interpolation between known values
     for i in range(1, input_size):
         start_idx = original_indices[i-1]
         end_idx = original_indices[i]
         start_value = input_array[i-1]
         end_value = input_array[i]
         
-        # Linear interpolation between start_idx and end_idx
         for idx in range(start_idx + 1, end_idx):
             weight = (idx - start_idx) / (end_idx - start_idx)
             output_array[idx] = start_value + weight * (end_value - start_value)
@@ -68,7 +64,6 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
         start_value = input_array[1]
         end_value = input_array[0]
 
-        # Linear interpolation between start_idx and end_idx
         for idx in range(start_idx + 1, end_idx):
             weight = (idx - start_idx) / (end_idx - start_idx)
             output_array[idx] = start_value + weight * (end_value - start_value)
@@ -79,7 +74,6 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
         start_value = input_array[-1]
         end_value = input_array[-2]
 
-        # Linear interpolation between start_idx and end_idx
         for idx in range(start_idx + 1, end_idx):
             weight = (idx - start_idx) / (end_idx - start_idx)
             output_array[idx] = start_value + weight * (end_value - start_value)

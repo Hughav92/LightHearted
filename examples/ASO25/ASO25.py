@@ -36,8 +36,9 @@ import os
 import numpy as np
 import keyboard
 from multiprocessing import Process
-from utils.utils import setup_osc_server, osc_loop, FIFOBuffer, initiate_client
+from utils.utils import setup_osc_server, osc_loop, initiate_client
 from csv_simulator.csv_simulator import csv_sim
+from acquisition.fifo_buffer import FIFOBuffer
 from derivation.heart_rate import heart_rate
 from derivation.transforms import pan_tompkins
 from derivation.mapping_array import MappingArray

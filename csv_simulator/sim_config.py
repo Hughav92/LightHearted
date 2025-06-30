@@ -1,0 +1,10 @@
+filepath = None
+column = None
+csv_sr = 256
+wait_time = 1/csv_sr
+csv_receiver_ip = "127.0.0.1"
+csv_receiver_port = 13000
+csv_visualiser_ip = "127.0.0.1"
+csv_visualiser_port = 14000
+visualiser = True
+audio = True
