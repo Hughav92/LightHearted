@@ -89,7 +89,7 @@ async def transform_signals(ecg_buffer_dict: dict[str, FIFOBuffer], transformed_
         ecg_buffer_dict_copy = ecg_buffer_dict.copy()
         for address in osc_addresses:
             if ecg_buffer_dict_copy[address].get_size() > 21:
-                result = ecg_buffer_dict_copy[address].transform_tick([pan_tompkins], [(5, 12, 0.15, 256)], [{}], mode="update")
+                result = ecg_buffer_dict_copy[address].transform_tick([pan_tompkins], [(ecg_filt_low, ecg_filt_high, ecg_window, ecg_sr)], [{}], mode="update")
                 if result is not None:
                     transformed_dict[address].enqueue(result)
         await asyncio.sleep(0)
@@ -111,7 +111,7 @@ async def derive_heart_rate(transformed_dict: dict[str, FIFOBuffer], heart_rate_
         transformed_dict_copy = transformed_dict.copy()
         for address in osc_addresses:
             if transformed_dict_copy[address].is_full():
-                result = transformed_dict_copy[address].transform_tick([heart_rate], [(10, 256)], [{}], mode="time", interval=1000, output_index=0)
+                result = transformed_dict_copy[address].transform_tick([heart_rate], [(hr_window, ecg_sr)], [{}], mode="time", interval=1000, output_index=0)
                 if result is not None:
                     heart_rate_buffer_dict[address].enqueue(result)
         await asyncio.sleep(0)
@@ -154,7 +154,7 @@ async def derive_heart_rate_peaks(transformed_dict: dict[str, FIFOBuffer], peak_
         transformed_dict_copy = transformed_dict.copy()
         for address in osc_addresses:
             if transformed_dict_copy[address].is_full():
-                result = transformed_dict_copy[address].transform_tick([heart_rate], [(10, 256)], [{}], mode="update", output_index=1)
+                result = transformed_dict_copy[address].transform_tick([heart_rate], [(hr_window, ecg_sr)], [{}], mode="update", output_index=1)
                 if result is not None:
                     peak_buffer_dict[address].set_buffer(result, resize_buffer=True)
         await asyncio.sleep(0)
@@ -232,7 +232,7 @@ async def organ_continuous_mapping(lighting_array: LightingArray, mapping_array:
                 channel_functions = [r_functions, g_functions, b_functions]
                 channel_kwargs_list = [r_kwargs_list, g_kwargs_list, b_kwargs_list]
                 functions = [range_scaler, dimensionality_expansion, np.clip, range_scaler]
-                args = [ (0, 1, 60, 120), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
+                args = [ (0, 1, mapping_hr_low, mapping_hr_high), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
                 kwargs = [{}, {}, {}, {}]
                 organ_continuous_mapper.set_functions(functions, args, kwargs)
                 last_config = {
@@ -342,7 +342,7 @@ async def baluster_continuous_mapping(lighting_array: LightingArray, mapping_arr
                 channel_functions = [r_functions, g_functions, b_functions, w_functions]
                 channel_kwargs_list = [r_kwargs_list, g_kwargs_list, b_kwargs_list, w_kwargs_list]
                 functions = [range_scaler, dimensionality_expansion, np.clip, range_scaler]
-                args = [ (0, 1, 60, 120), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
+                args = [ (0, 1, mapping_hr_low, mapping_hr_high), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
                 kwargs = [{}, {}, {}, {}]
                 baluster_continuous_mapper.set_functions(functions, args, kwargs)
                 last_config = {
@@ -628,7 +628,7 @@ async def set_background(background_buffer_dict: dict[int, FIFOBuffer], backgrou
     -------
     None
     """
-    values = np.linspace(60, 120, len(background_buffer_dict))
+    values = np.linspace(mapping_hr_low, mapping_hr_high, len(background_buffer_dict))
     for i, val in enumerate(values):
         background_buffer_dict[i].set_buffer([val], resize_buffer=True)
     
@@ -645,7 +645,7 @@ async def set_background(background_buffer_dict: dict[int, FIFOBuffer], backgrou
     channel_kwargs_list = [r_kwargs_list, g_kwargs_list, b_kwargs_list, w_kwargs_list]
 
     functions = [range_scaler, dimensionality_expansion, np.clip, range_scaler]
-    args = [ (0, 1, 60, 120), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
+    args = [ (0, 1, mapping_hr_low, mapping_hr_high), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
     kwargs = [{}, {}, {}, {}]
     
     background_continuous_mapper = ContinuousMapper(background_map, lighting_array, functions, args, kwargs)
@@ -680,7 +680,7 @@ async def set_background(background_buffer_dict: dict[int, FIFOBuffer], backgrou
             channel_kwargs_list = [r_kwargs_list, g_kwargs_list, b_kwargs_list, w_kwargs_list]
 
             functions = [range_scaler, dimensionality_expansion, np.clip, range_scaler]
-            args = [ (0, 1, 60, 120), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
+            args = [ (0, 1, mapping_hr_low, mapping_hr_high), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
             kwargs = [{}, {}, {}, {}]
 
             background_continuous_mapper.set_functions(functions, args, kwargs)

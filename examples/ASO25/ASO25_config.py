@@ -2,12 +2,16 @@ import sys
 sys.path.append("../")
 from mapping.mapping_functions import ones, zeros, identity, flip_range, offset, scale, sine, cosine
 
+### OSC Configuration ###
+
 osc_addresses = ["/aud", "/brs", "/conductor", "/vn1"]
 osc_ip = "127.0.0.1"
 osc_port = 13000
 
 lighting_ip = "10.101.90.103"
 lighting_port = 12000
+
+### RGBW Mapping Functions ###
 
 functions_dict = {1: {"r_functions": [ones],
                     "g_functions": [flip_range, offset, scale],
@@ -55,3 +59,15 @@ functions_container = {
     "b_kwargs_list": [],
     "w_kwargs_list": []
 }
+
+### ECG Configuration ###
+
+ecg_sr = 256
+ecg_filt_low = 5
+ecg_filt_high = 12
+ecg_window = 0.15
+
+hr_window = 10
+
+mapping_hr_low = 60
+mapping_hr_high = 120
