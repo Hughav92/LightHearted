@@ -220,7 +220,7 @@ class FIFOBuffer:
         np.ndarray or None
             The result of transform if triggered, else None.
         """
-        now = time.perf_counter() * 1000  # ms
+        now = time.perf_counter() * 1000
 
         if mode == "update":
             if self._version != self._last_transform_version:
