@@ -16,7 +16,7 @@ Any scripts using LightHearted will be sensitive to filepaths when importing. It
 
 ```python
 import sys
-sys.path.append("path/to/LightHearted)
+sys.path.append("path/to/LightHearted")
 ```
 for imports.
 
