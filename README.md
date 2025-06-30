@@ -22,6 +22,8 @@ for imports.
 
 Full usage is described in the [tutorial.ipynb](documentation\tutorial.ipynb) Jupyter Notebook.
 
+Documentation can be found [here](documentation/documentation.md).
+
 ## Requirements
 
 See [requirements.txt](requirements.txt) for the full list of dependencies.
