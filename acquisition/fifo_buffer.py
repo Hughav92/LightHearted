@@ -133,10 +133,11 @@ class FIFOBuffer:
         self._last_transform_version = -1
         self._last_transform_time = 0
 
-    def transform(self, functions, args_list=None, kwargs_list=None, output_index=None):
+    def transform(self, functions, args_list=None, kwargs_list=None, output_index=None, output_indices=None):
         """
         Apply a chain of functions to the buffer and return the result.
         Supports using 'min', 'max', 'mean', 'std', 'median' as special values in kwargs.
+        Optionally, an output index can be specified for each function in the chain.
 
         Parameters
         ----------
@@ -148,6 +149,8 @@ class FIFOBuffer:
             List of keyword argument dicts for each function.
         output_index : int or None, optional
             Which output to use if the final function returns multiple outputs. If None, use the entire result.
+        output_indices : list[int or None], optional
+            List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
         Returns
         -------
@@ -158,6 +161,8 @@ class FIFOBuffer:
             args_list = [()] * len(functions)
         if kwargs_list is None:
             kwargs_list = [{}] * len(functions)
+        if output_indices is None:
+            output_indices = [None] * len(functions)
 
         values = np.nan_to_num(self.buffer, nan=0, posinf=1, neginf=-1)
 
@@ -188,13 +193,18 @@ class FIFOBuffer:
                 elif value == "median":
                     kwargs[key] = v_median
             values = func(values, *args, **kwargs)
+            # Optionally select output index after each function
+            idx = output_indices[i] if i < len(output_indices) else None
+            if idx is not None and isinstance(values, (tuple, list)):
+                values = values[idx]
+        # Backward compatibility: apply output_index to final result if provided
         if output_index is not None and isinstance(values, (tuple, list)):
             values = values[output_index]
         if isinstance(values, np.ndarray):
             values = np.nan_to_num(values, nan=0, posinf=1, neginf=-1)
         return values
 
-    def transform_tick(self, functions, args_list=None, kwargs_list=None, mode="update", interval=1000, output_index=None):
+    def transform_tick(self, functions, args_list=None, kwargs_list=None, mode="update", interval=1000, output_index=None, output_indices=None):
         """
         Only perform transform if the buffer has changed since the last call ("update" mode),
         or at a fixed interval in ms ("time" mode).
@@ -214,6 +224,8 @@ class FIFOBuffer:
             Interval in milliseconds for "time" mode.
         output_index : int or None, optional
             Which output to use if the final function returns multiple outputs. If None, use the entire result.
+        output_indices : list[int or None], optional
+            List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
         Returns
         -------
@@ -225,13 +237,13 @@ class FIFOBuffer:
         if mode == "update":
             if self._version != self._last_transform_version:
                 self._last_transform_version = self._version
-                return self.transform(functions, args_list, kwargs_list, output_index=output_index)
+                return self.transform(functions, args_list, kwargs_list, output_index=output_index, output_indices=output_indices)
         elif mode == "time":
             if now - self._last_transform_time >= interval:
                 self._last_transform_time += interval
                 if now - self._last_transform_time > interval:
                     self._last_transform_time = now
-                return self.transform(functions, args_list, kwargs_list, output_index=output_index)
+                return self.transform(functions, args_list, kwargs_list, output_index=output_index, output_indices=output_indices)
         else:
             raise ValueError("mode must be 'update' or 'time'")
         return None

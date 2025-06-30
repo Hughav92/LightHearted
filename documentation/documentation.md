@@ -107,6 +107,8 @@ efficient enqueuing, transformation, and statistical operations.
         List of keyword argument dicts for each function.
     output_index : int or None, optional
         Which output to use if the final function returns multiple outputs. If None, use the entire result.
+    output_indices : list[int or None], optional
+            List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
     Returns
     -------
@@ -133,6 +135,8 @@ efficient enqueuing, transformation, and statistical operations.
         Interval in milliseconds for "time" mode.
     output_index : int or None, optional
         Which output to use if the final function returns multiple outputs. If None, use the entire result.
+    output_indices : list[int or None], optional
+            List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
     Returns
     -------
