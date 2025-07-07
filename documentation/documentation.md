@@ -18,7 +18,7 @@ efficient enqueuing, transformation, and statistical operations.
   Initialize the FIFO buffer with a given maximum size.
 
   **Parameters:**
-  - **size** (int): The maximum size of the buffer.
+  **size** (int): The maximum size of the buffer.
 
 - **is_full() -> bool**
   
