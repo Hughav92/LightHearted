@@ -565,15 +565,191 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
     
 - **fill_1d(input_array, output_size, input_value)**
     
-    Fill a 1D array to a specified size with a given value.
+    Fill a 1D array with a constant value.
+
+    Parameters
+    ----------
+    input_value : float
+        The value to fill the output array with.
+    output_size : int
+        The size of the output array.
+
+    Returns
+    -------
+    np.ndarray
+        An array filled with the specified value.
     
 - **dimensionality_expansion(x, channel_functions, channel_kwargs_list=None)**
     
-    Expand the dimensionality of an array using channel functions.
+    Perform parametric expansion on an input array using multiple functions for any number of channels (e.g., RGB, RGBW, etc.).
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array to be expanded.
+    channel_functions : list[list[callable]]
+        A list where each element is a list of functions to be applied to a channel (e.g., [r_funcs, g_funcs, b_funcs, ...]).
+    channel_kwargs_list : list[list[dict]], optional
+        A list where each element is a list of keyword argument dicts for the corresponding channel's functions.
+        If not provided, defaults to empty dicts for all functions.
+
+    Returns
+    -------
+    tuple[np.ndarray, ...]
+        A tuple containing arrays for each expanded channel.
     
-- **identity(x)**, **sine(x)**, **cosine(x)**, **offset(x, offset)**, **scale(x, scale)**, **range_scaler(x, new_min, new_max, old_min=None, old_max=None)**, **zeros(x)**, **ones(x)**, **flip(x)**, **minus(x)**, **flip_range(x, min, max)**
+- **identity(x)**
     
-    Various array transformation utilities.
+    Identity function that returns the input value.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+
+    Returns
+    -------
+    np.ndarray
+        The input array.
+    
+- **sine(x)**
+    
+    Sine function that returns the sine of the input value.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+
+    Returns
+    -------
+    np.ndarray
+        The sine of the input array.
+    
+- **cosine(x)**
+    
+    Cosine function that returns the cosine of the input value.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+
+    Returns
+    -------
+    np.ndarray
+        The cosine of the input array.
+    
+- **offset(x, offset)**
+    
+    Offset function that returns the input value plus an offset.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+    offset : float
+        The offset to add to the input array.
+
+    Returns
+    -------
+    np.ndarray
+        The input array plus the offset.
+    
+- **scale(x, scale)**
+    
+    Scale function that returns the input value multiplied by a scale factor.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+    scale : float
+        The scale factor to multiply the input array by.
+
+    Returns
+    -------
+    np.ndarray
+        The input array multiplied by the scale factor.
+    
+- **range_scaler(x, new_min, new_max, old_min=None, old_max=None)**
+    
+    A flexible linear scaler that can scale scalars, arrays, tuples/lists of arrays, or arrays of arrays to a given range.
+    The input shape and type are preserved.
+    
+- **zeros(x)**
+    
+    Zero function that returns an array of zeros.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+
+    Returns
+    -------
+    np.ndarray
+        An array of zeros with the same shape as the input array.
+    
+- **ones(x)**
+    
+    Ones function that returns an array of ones.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+
+    Returns
+    -------
+    np.ndarray
+        An array of ones with the same shape as the input array.
+    
+- **flip(x)**
+    
+    Flip function that returns the input array in reverse order.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+
+    Returns
+    -------
+    np.ndarray
+        The input array in reverse order.
+    
+- **minus(x)**
+    
+    Negation function that returns the negative of the input array.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+
+    Returns
+    -------
+    np.ndarray
+        The negated input array.
+    
+- **flip_range(x, min, max)**
+    
+    Flip the range of the input array around its center.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The input array.
+    min : float
+        The minimum value of the range.
+    max : float
+        The maximum value of the range.
+
+    Returns
+    -------
+    np.ndarray
+        The input array with its range flipped around the center.
     
 
 ### class PeakCrossesIndexTrigger
