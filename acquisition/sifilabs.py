@@ -5,7 +5,7 @@ from pythonosc.udp_client import SimpleUDPClient
 import keyboard
 import sys
 import numpy as np
-from sificonfig import mac_dict, sifi_receiver_ip, sifi_receiver_port, sifi_visualiser_ip, sifi_visualiser_port, sifi_filter, sifi_filter_low, sifi_filter_high
+from sifi_config import mac_dict, sifi_receiver_ip, sifi_receiver_port, sifi_visualiser_ip, sifi_visualiser_port, sifi_filter, sifi_filter_low, sifi_filter_high
 
 def connect_device(bridge: sbp.SifiBridge, device_name: str, mac_address: str) -> None:
     """
