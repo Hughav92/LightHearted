@@ -5,9 +5,9 @@ sys.path.append("../")
 from acquisition.fifo_buffer import FIFOBuffer
 from utils.utils import find_nearest
 
-def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: list[int], edge_behavior: str = "reflect") -> np.ndarray:
+def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: list[int], edge_behaviour: str = "reflect") -> np.ndarray:
     """
-    Perform 1D interpolation to map input array values to a specified output size, with user-definable edge behavior.
+    Perform 1D interpolation to map input array values to a specified output size, with user-definable edge behaviour.
 
     Parameters
     ----------
@@ -17,8 +17,8 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
         The size of the output array.
     original_indices : list[int]
         The indices in the output array corresponding to the input array values.
-    edge_behavior : str, optional
-        Edge behavior when there is no original index at the edge. Options:
+    edge_behaviour : str, optional
+        Edge behaviour when there is no original index at the edge. Options:
         - "reflect": (default) Extrapolate at the edges by reflecting the nearest value.
         - "wrap": Interpolate between the last and first value, wrapping around the array.
 
@@ -27,13 +27,13 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
     np.ndarray
         The interpolated output array.
     """
-    if edge_behavior not in ("reflect", "wrap"):
-        raise ValueError(f"edge_behavior must be 'reflect' or 'wrap', got '{edge_behavior}'")
+    if edge_behaviour not in ("reflect", "wrap"):
+        raise ValueError(f"edge_behaviour must be 'reflect' or 'wrap', got '{edge_behaviour}'")
     original_indices = np.array(original_indices)
     input_array = np.array(input_array)
     input_size = len(input_array)
 
-    if edge_behavior == "wrap":
+    if edge_behaviour == "wrap":
         output_array = np.zeros(output_size)
         for i in range(input_size):
             output_array[original_indices[i]] = input_array[i]
@@ -52,7 +52,7 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
                 weight = j / denom
                 output_array[idx % output_size] = start_value + weight * (end_value - start_value)
         return output_array
-    elif edge_behavior == "reflect":
+    elif edge_behaviour == "reflect":
         if original_indices[0] > 0 and original_indices[-1] < output_size - 1:
             output_size = output_size + 2
             original_indices = original_indices + 1

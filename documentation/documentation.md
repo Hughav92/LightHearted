@@ -399,10 +399,6 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   **Returns:**
   - **np.ndarray**: An array of anchor positions (indices in the fixture array).
 
-- **update_anchor_positions(new_anchor_positions)**
-  
-  Set the positions of the anchors in the fixture array.
-
   **Parameters:**
   - **new_anchor_positions** (np.ndarray): An array of new anchor positions (indices in the fixture array).
 
@@ -499,15 +495,15 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
 
 ## mapping/mapping_functions.py
 
-- **interpolate_1d(input_array, output_size, original_indices, edge_behavior='reflect')**
+- **interpolate_1d(input_array, output_size, original_indices, edge_behaviour='reflect')**
   
-  Perform 1D interpolation to map input array values to a specified output size, with user-definable edge behavior.
+  Perform 1D interpolation to map input array values to a specified output size, with user-definable edge behaviour.
 
   **Parameters:**
   - **input_array** (np.ndarray): The input array containing values to interpolate.
   - **output_size** (int): The size of the output array.
   - **original_indices** (list[int]): The indices in the output array corresponding to the input array values.
-  - **edge_behavior** (str, optional): Edge behavior when there is no original index at the edge. Options are:
+  - **edge_behaviour** (str, optional): Edge behaviour when there is no original index at the edge. Options are:
     - "reflect": (default) Extrapolate at the edges by reflecting the nearest value.
     - "wrap": Interpolate between the last and first value, wrapping around the array.
 
@@ -515,7 +511,7 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **np.ndarray**: The interpolated output array.
 
   **Raises:**
-  - **ValueError**: If edge_behavior is not 'reflect' or 'wrap'.
+  - **ValueError**: If edge_behaviour is not 'reflect' or 'wrap'.
 
 - **fill_1d(input_array, output_size, input_value)**
   

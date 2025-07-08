@@ -53,7 +53,7 @@ class LightingArray:
             A list or array of new anchor IDs.
         """
         self.anchors = np.array(new_anchors)
-        self.update_anchor_positions(np.where(np.isin(self.fixtures, self.anchors))[0])
+        self.anchor_positions = np.where(np.isin(self.fixtures, self.anchors))[0]
 
     def get_anchor_positions(self):
         """
@@ -65,19 +65,6 @@ class LightingArray:
             An array of anchor positions (indices in the fixture array).
         """
         return self.anchor_positions
-    
-    def update_anchor_positions(self, new_anchor_positions):
-        """
-        Set the positions of the anchors in the fixture array.
-
-        Parameters
-        ----------
-        new_anchor_positions : np.ndarray
-            An array of new anchor positions (indices in the fixture array).
-        """
-        if len(new_anchor_positions) != len(self.anchor_positions):
-            raise ValueError(f"Length of new_anchor_positions ({len(new_anchor_positions)}) does not match number of anchors ({len(self.anchor_positions)})")
-        self.anchor_positions = new_anchor_positions
     
     def update_intensities(self, new_intensities):
         """
