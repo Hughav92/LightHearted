@@ -32,6 +32,17 @@ class LightingArray:
         self.white = np.zeros(self.no_leds)
         self.previous_white = np.zeros(self.no_leds)
 
+    def get_fixtures(self):
+        """
+        Get the fixture IDs of the lighting array.
+
+        Returns
+        -------
+        np.ndarray
+            An array of fixture IDs.
+        """
+        return self.fixtures
+
     def set_anchors(self, new_anchors):
         """
         Set the anchors for the lighting array and update anchor positions.
@@ -184,6 +195,50 @@ class LightingArray:
         """
         return self.intensities
     
+    def get_red(self):
+        """
+        Get the current red channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of red channel values for the fixtures.
+        """
+        return self.red
+    
+    def get_green(self):
+        """
+        Get the current green channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of green channel values for the fixtures.
+        """
+        return self.green
+    
+    def get_blue(self):
+        """
+        Get the current blue channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of blue channel values for the fixtures.
+        """
+        return self.blue
+    
+    def get_white(self):
+        """
+        Get the current white channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of white channel values for the fixtures.
+        """
+        return self.white
+    
     def get_rgb(self):
         """
         Get the current RGB channel values of the fixtures.
@@ -216,6 +271,50 @@ class LightingArray:
             An array of previous intensity values for the fixtures.
         """
         return self.previous_intensities
+    
+    def get_previous_red(self):
+        """
+        Get the previous red channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of previous red channel values for the fixtures.
+        """
+        return self.previous_red
+    
+    def get_previous_green(self):
+        """
+        Get the previous green channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of previous green channel values for the fixtures.
+        """
+        return self.previous_green
+    
+    def get_previous_blue(self):
+        """
+        Get the previous blue channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of previous blue channel values for the fixtures.
+        """
+        return self.previous_blue
+    
+    def get_previous_white(self):
+        """
+        Get the previous white channel values of the fixtures.
+
+        Returns
+        -------
+        np.ndarray
+            An array of previous white channel values for the fixtures.
+        """
+        return self.previous_white
     
     def get_previous_rgb(self):
         """

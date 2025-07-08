@@ -18,7 +18,7 @@ efficient enqueuing, transformation, and statistical operations.
   Initialize the FIFO buffer with a given maximum size.
 
   **Parameters:**
-  **size** (int): The maximum size of the buffer.
+  - **size** (int): The maximum size of the buffer.
 
 - **is_full() -> bool**
   
@@ -320,6 +320,41 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **fixtures** (list or np.ndarray): A list or array of fixture IDs (LED indices).
   - **anchors** (list or np.ndarray, optional): A list or array of anchor IDs (LED indices used as mapping anchors).
 
+- **get_fixtures()**
+  
+  Get the fixture IDs of the lighting array.
+
+  **Returns:**
+  - **np.ndarray**: An array of fixture IDs.
+
+- **get_red()**
+  
+  Get the current red channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of red channel values for the fixtures.
+
+- **get_green()**
+  
+  Get the current green channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of green channel values for the fixtures.
+
+- **get_blue()**
+  
+  Get the current blue channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of blue channel values for the fixtures.
+
+- **get_white()**
+  
+  Get the current white channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of white channel values for the fixtures.
+
 - **set_anchors(new_anchors)**
   
   Set the anchors for the lighting array and update anchor positions.
@@ -380,6 +415,34 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
 
   **Returns:**
   - **np.ndarray or tuple**: The current channel values.
+
+- **get_previous_red()**
+  
+  Get the previous red channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of previous red channel values for the fixtures.
+
+- **get_previous_green()**
+  
+  Get the previous green channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of previous green channel values for the fixtures.
+
+- **get_previous_blue()**
+  
+  Get the previous blue channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of previous blue channel values for the fixtures.
+
+- **get_previous_white()**
+  
+  Get the previous white channel values of the fixtures.
+
+  **Returns:**
+  - **np.ndarray**: An array of previous white channel values for the fixtures.
 
 - **get_previous_intensities()**, **get_previous_rgb()**, **get_previous_rgbw()**
   
@@ -703,6 +766,126 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   
   Continuously process OSC messages.
     
+
+---
+
+## communication/grandma3_osc.py
+
+### Main Functions:
+
+- **format_RGB(fixtures, r=None, g=None, b=None, client=None)**
+  
+  Format RGB values for fixtures and optionally send them to a client.
+
+  **Parameters:**
+  - **fixtures** (list): List of fixture IDs.
+  - **r** (list, optional): Red channel values.
+  - **g** (list, optional): Green channel values.
+  - **b** (list, optional): Blue channel values.
+  - **client** (object, optional): OSC client to send the message to.
+
+  **Returns:**
+  - **str**: Formatted string if no client is provided.
+
+- **ramp_RGB(duration, step_time, fixtures, r_start=None, r_end=None, g_start=None, g_end=None, b_start=None, b_end=None, client=None)**
+  
+  Asynchronously ramp RGB values for fixtures over a given duration.
+
+  **Parameters:**
+  - **duration** (float): The duration over which to ramp the RGB values in seconds.
+  - **step_time** (float): The time interval between each step in output in seconds.
+  - **fixtures** (list): List of fixture IDs.
+  - **r_start** (list, optional): List of starting red channel values.
+  - **r_end** (list, optional): List of ending red channel values.
+  - **g_start** (list, optional): List of starting green channel values.
+  - **g_end** (list, optional): List of ending green channel values.
+  - **b_start** (list, optional): List of starting blue channel values.
+  - **b_end** (list, optional): List of ending blue channel values.
+  - **client** (object, optional): OSC client to send the message to.
+
+  **Returns:**
+  - **str**: Formatted string if no client is provided.
+
+- **format_RGBW(fixtures, r=None, g=None, b=None, w=None, client=None)**
+  
+  Format RGBW values for fixtures and optionally send them to a client.
+
+  **Parameters:**
+  - **fixtures** (list): List of fixture IDs.
+  - **r** (list, optional): Red channel values.
+  - **g** (list, optional): Green channel values.
+  - **b** (list, optional): Blue channel values.
+  - **w** (list, optional): White channel values.
+  - **client** (object, optional): OSC client to send the message to.
+
+  **Returns:**
+  - **str**: Formatted string if no client is provided.
+
+- **ramp_RGBW(duration, step_time, fixtures, r_start=None, r_end=None, g_start=None, g_end=None, b_start=None, b_end=None, w_start=None, w_end=None, client=None)**
+  
+  Asynchronously ramp RGBW values for fixtures over a given duration.
+
+  **Parameters:**
+  - **duration** (float): The duration over which to ramp the RGBW values in seconds.
+  - **step_time** (float): The time interval between each step in output in seconds.
+  - **fixtures** (list): List of fixture IDs.
+  - **r_start** (list, optional): List of starting red channel values.
+  - **r_end** (list, optional): List of ending red channel values.
+  - **g_start** (list, optional): List of starting green channel values.
+  - **g_end** (list, optional): List of ending green channel values.
+  - **b_start** (list, optional): List of starting blue channel values.
+  - **b_end** (list, optional): List of ending blue channel values.
+  - **w_start** (list, optional): List of starting white channel values.
+  - **w_end** (list, optional): List of ending white channel values.
+  - **client** (object, optional): OSC client to send the message to.
+
+  **Returns:**
+  - **str**: Formatted string if no client is provided.
+
+- **format_intensity(fixtures, values, concurrent=True, client=None)**
+  
+  Format intensity values for fixtures and optionally send them to a client.
+
+  **Parameters:**
+  - **fixtures** (list or np.ndarray or int or float): List of fixture IDs or a single fixture ID.
+  - **values** (list or np.ndarray or int or float): List of intensity values or a single intensity value.
+  - **concurrent** (bool, optional): Whether to apply the same intensity to all fixtures concurrently. Default is True.
+  - **client** (object, optional): OSC client to send the message to.
+
+  **Returns:**
+  - **str**: Formatted string if no client is provided.
+
+- **ramp_intensity(duration, step_time, fixtures, values_start, values_end, concurrent=True, client=None)**
+  
+  Asynchronously ramp intensity values for fixtures over a given duration.
+
+  **Parameters:**
+  - **duration** (float): The duration over which to ramp the intensity values in seconds.
+  - **step_time** (float): The time interval between each step in output in seconds.
+  - **fixtures** (list): List of fixture IDs.
+  - **values_start** (list or int or float): List of starting intensity values or a single value to apply to all fixtures.
+  - **values_end** (list or int or float): List of ending intensity values or a single value to apply to all fixtures.
+  - **concurrent** (bool, optional): Whether to apply the same intensity to all fixtures concurrently. Default is True.
+  - **client** (object, optional): OSC client to send the message to.
+
+  **Returns:**
+  - **str**: Formatted string if no client is provided.
+
+- **pulse_intensity(fixtures, on, off, wait_time, client, concurrent=True, off_first=True)**
+  
+  Asynchronously pulse the intensity of fixtures between on and off values.
+
+  **Parameters:**
+  - **fixtures** (list): List of fixture IDs to pulse.
+  - **on** (int): The intensity value to set for the "on" state.
+  - **off** (int): The intensity value to set for the "off" state.
+  - **wait_time** (float): The time in seconds to wait between the "on" and "off" states.
+  - **client** (object): The lighting client to send messages to.
+  - **concurrent** (bool, optional): Whether to apply the same intensity to all fixtures concurrently.
+  - **off_first** (bool, optional): If True, start with the "off" state.
+
+  **Returns:**
+  - **None**
 
 ---
 
