@@ -1,6 +1,6 @@
 # LightHearted Documentation
 
-This document provides an overview of the main classes and functions in the `acquisition`, `csv_simulator`, `derivation`, `mapping`, and `utils` modules.
+This document provides an overview of the main classes and functions in LightHearted.
 
 ---
 
