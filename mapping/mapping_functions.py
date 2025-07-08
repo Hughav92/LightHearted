@@ -5,9 +5,9 @@ sys.path.append("../")
 from acquisition.fifo_buffer import FIFOBuffer
 from utils.utils import find_nearest
 
-def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: list[int]) -> np.ndarray:
+def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: list[int], edge_behavior: str = "reflect") -> np.ndarray:
     """
-    Perform 1D interpolation to map input array values to a specified output size.
+    Perform 1D interpolation to map input array values to a specified output size, with user-definable edge behavior.
 
     Parameters
     ----------
@@ -17,78 +17,89 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
         The size of the output array.
     original_indices : list[int]
         The indices in the output array corresponding to the input array values.
+    edge_behavior : str, optional
+        Edge behavior when there is no original index at the edge. Options:
+        - "reflect": (default) Extrapolate at the edges by reflecting the nearest value.
+        - "wrap": Interpolate between the last and first value, wrapping around the array.
 
     Returns
     -------
     np.ndarray
         The interpolated output array.
     """
+    if edge_behavior not in ("reflect", "wrap"):
+        raise ValueError(f"edge_behavior must be 'reflect' or 'wrap', got '{edge_behavior}'")
     original_indices = np.array(original_indices)
     input_array = np.array(input_array)
-
     input_size = len(input_array)
 
-    if original_indices[0] > 0 and original_indices[-1] < output_size - 1:
-        output_size = output_size + 2
-        original_indices = original_indices + 1
+    if edge_behavior == "wrap":
         output_array = np.zeros(output_size)
-
-    elif original_indices[0] > 0:
-        output_size = output_size + 1
-        original_indices = original_indices + 1
-        output_array = np.zeros(output_size)
-
-    elif original_indices[-1] < output_size - 1:
-        output_size = output_size + 1
-        output_array = np.zeros(output_size)
-
-    else:
-        output_array = np.zeros(output_size)
-
-    for i in range(input_size):
-        output_array[original_indices[i]] = input_array[i]
-    
-    for i in range(1, input_size):
-        start_idx = original_indices[i-1]
-        end_idx = original_indices[i]
-        start_value = input_array[i-1]
-        end_value = input_array[i]
-        
-        for idx in range(start_idx + 1, end_idx):
-            weight = (idx - start_idx) / (end_idx - start_idx)
-            output_array[idx] = start_value + weight * (end_value - start_value)
-
-    if original_indices[0] > 0:
-        start_idx = 0
-        end_idx = original_indices[0]
-        start_value = input_array[1]
-        end_value = input_array[0]
-
-        for idx in range(start_idx + 1, end_idx):
-            weight = (idx - start_idx) / (end_idx - start_idx)
-            output_array[idx] = start_value + weight * (end_value - start_value)
-
-    if original_indices[-1] < output_size - 1:
-        start_idx = original_indices[-1]
-        end_idx = output_size-1
-        start_value = input_array[-1]
-        end_value = input_array[-2]
-
-        for idx in range(start_idx + 1, end_idx):
-            weight = (idx - start_idx) / (end_idx - start_idx)
-            output_array[idx] = start_value + weight * (end_value - start_value)
-
-    if original_indices[0] > 0 and original_indices[-1] < output_size - 1:
-        return output_array[1:-1]
-    
-    elif original_indices[0] > 0:
-        return output_array[1:]
-    
-    elif original_indices[-1] < output_size - 1:
-        return output_array[:-1]
-    
-    else:
+        for i in range(input_size):
+            output_array[original_indices[i]] = input_array[i]
+        for i in range(input_size):
+            start_idx = original_indices[i]
+            end_idx = original_indices[(i + 1) % input_size]
+            start_value = input_array[i]
+            end_value = input_array[(i + 1) % input_size]
+            if end_idx > start_idx:
+                idx_range = range(start_idx + 1, end_idx)
+                denom = end_idx - start_idx
+            else:
+                idx_range = list(range(start_idx + 1, output_size)) + list(range(0, end_idx))
+                denom = (output_size - start_idx) + end_idx
+            for j, idx in enumerate(idx_range, 1):
+                weight = j / denom
+                output_array[idx % output_size] = start_value + weight * (end_value - start_value)
         return output_array
+    elif edge_behavior == "reflect":
+        if original_indices[0] > 0 and original_indices[-1] < output_size - 1:
+            output_size = output_size + 2
+            original_indices = original_indices + 1
+            output_array = np.zeros(output_size)
+        elif original_indices[0] > 0:
+            output_size = output_size + 1
+            original_indices = original_indices + 1
+            output_array = np.zeros(output_size)
+        elif original_indices[-1] < output_size - 1:
+            output_size = output_size + 1
+            output_array = np.zeros(output_size)
+        else:
+            output_array = np.zeros(output_size)
+        for i in range(input_size):
+            output_array[original_indices[i]] = input_array[i]
+        for i in range(1, input_size):
+            start_idx = original_indices[i-1]
+            end_idx = original_indices[i]
+            start_value = input_array[i-1]
+            end_value = input_array[i]
+            for idx in range(start_idx + 1, end_idx):
+                weight = (idx - start_idx) / (end_idx - start_idx)
+                output_array[idx] = start_value + weight * (end_value - start_value)
+        if original_indices[0] > 0:
+            start_idx = 0
+            end_idx = original_indices[0]
+            start_value = input_array[1]
+            end_value = input_array[0]
+            for idx in range(start_idx + 1, end_idx):
+                weight = (idx - start_idx) / (end_idx - start_idx)
+                output_array[idx] = start_value + weight * (end_value - start_value)
+        if original_indices[-1] < output_size - 1:
+            start_idx = original_indices[-1]
+            end_idx = output_size-1
+            start_value = input_array[-1]
+            end_value = input_array[-2]
+            for idx in range(start_idx + 1, end_idx):
+                weight = (idx - start_idx) / (end_idx - start_idx)
+                output_array[idx] = start_value + weight * (end_value - start_value)
+        if original_indices[0] > 0 and original_indices[-1] < output_size - 1:
+            return output_array[1:-1]
+        elif original_indices[0] > 0:
+            return output_array[1:]
+        elif original_indices[-1] < output_size - 1:
+            return output_array[:-1]
+        else:
+            return output_array
     
 def fill_1d(input_array: np.ndarray, output_size: int, input_value: float) -> np.ndarray:
     """

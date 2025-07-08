@@ -6,3 +6,5 @@ acquisition/__pycache__/fifo_buffer.cpython-310.pyc
 utils/__pycache__/utils.cpython-310.pyc
 derivation/__pycache__/transforms.cpython-310.pyc
 mapping/__pycache__/lighting_array.cpython-310.pyc
+mapping/__pycache__/mapping_functions.cpython-310.pyc
+derivation/__pycache__/mapping_array.cpython-310.pyc

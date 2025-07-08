@@ -145,7 +145,7 @@ efficient enqueuing, transformation, and statistical operations.
 
 ### class MappingArray
 
-A class for handling derived features from multiple FIFO buffers to be mapped to a lighting array.
+A class for handling data from multiple FIFO buffers to be mapped to a lighting array.
 
 
 #### Methods:
@@ -162,6 +162,13 @@ A class for handling derived features from multiple FIFO buffers to be mapped to
 
   **Parameters:**
   - **dict** (dict[str, int]): A dictionary where keys are OSC addresses and values are their respective positions in the array.
+
+- **get_positions()**
+  
+  Get the current positions of the buffers in the array.
+
+  **Returns:**
+  - **list[str]**: A list of keys representing the current positions of the buffers in the array.
 
 - **get_array()**
   
@@ -180,44 +187,67 @@ A class for handling derived features from multiple FIFO buffers to be mapped to
   **Returns:**
   - **np.ndarray**: The values corresponding to the specified keys.
 
-- **update_array(reduction_functions, args=(), kwargs=None, output_index=None)**
+- **update_array(reduction_functions, args_list=None, kwargs_list=None, output_index=None, output_indices=None)**
   
   Update the array by applying the same reduction function(s) to all buffers.
 
   **Parameters:**
   - **reduction_functions** (callable or list[callable]): A single function or list of functions to apply to each buffer.
-  - **args** (tuple, optional): Positional arguments to pass to the function(s).
-  - **kwargs** (dict, optional): Keyword arguments to pass to the function(s).
+  - **args_list** (list[tuple], optional): List of positional argument tuples for each function.
+  - **kwargs_list** (list[dict], optional): List of keyword argument dicts for each function.
   - **output_index** (int or None, optional): Which output to use if the function returns multiple outputs. If None, use the entire result.
+  - **output_indices** (list[int or None], optional): List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
-- **update_array_ticks(reduction_functions, args=(), kwargs=None, mode="update", interval=1000, output_index=None)**
+- **update_array_tick(reduction_functions, args_list=None, kwargs_list=None, mode="update", interval=1000, output_index=None, output_indices=None)**
   
   Update the array only if any buffer has changed ("update" mode), or at a fixed interval ("time" mode).
 
   **Parameters:**
   - **reduction_functions** (callable or list[callable]): Function(s) to apply to each buffer.
-  - **args** (tuple, optional): Positional arguments for the function(s).
-  - **kwargs** (dict, optional): Keyword arguments for the function(s).
+  - **args_list** (list[tuple], optional): List of positional argument tuples for each function.
+  - **kwargs_list** (list[dict], optional): List of keyword argument dicts for each function.
   - **mode** (str, optional): "update" (default): update if any buffer changed. "time": update at a fixed interval (interval ms).
   - **interval** (int, optional): Interval in milliseconds for "time" mode.
   - **output_index** (int or None, optional): Which output to use if the function returns multiple outputs. If None, use the entire result.
+  - **output_indices** (list[int or None], optional): List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
   **Returns:**
   - **bool**: True if the array was updated, False otherwise.
 
-- **spatial_expansion(expansion_function, args=None, kwargs=None, return_expansion=False, expansion_name=None)**
+- **spatial_expansion(expansion_functions, args_list=None, kwargs_list=None, output_indices=None, return_expansion=False, expansion_name=None)**
   
-  Apply a spatial expansion function to the array.
+  Apply a chain of spatial expansion functions to the array.
 
   **Parameters:**
-  - **expansion_function** (callable): The function to apply for spatial expansion.
-  - **args** (tuple, optional): Positional arguments for the function.
-  - **kwargs** (dict, optional): Keyword arguments for the function.
+  - **expansion_functions** (callable or list[callable]): The function(s) to apply for spatial expansion.
+  - **args_list** (list[tuple], optional): List of positional argument tuples for each function.
+  - **kwargs_list** (list[dict], optional): List of keyword argument dicts for each function.
+  - **output_indices** (list[int or None], optional): List of output indices for each function. If provided, after each function call, the corresponding output index is used.
   - **return_expansion** (bool, optional): If True, return the expansion instead of storing it.
   - **expansion_name** (str, optional): Name of the expansion for storage.
 
   **Returns:**
   - **np.ndarray or None**: The expanded array if return_expansion is True, otherwise None.
+
+- **get_expansion(expansion_name)**
+  
+  Get a stored expansion array by name.
+
+  **Parameters:**
+  - **expansion_name** (str): The name of the expansion to retrieve.
+
+  **Returns:**
+  - **np.ndarray**: The requested expansion array.
+
+  **Raises:**
+  - **KeyError**: If the expansion name does not exist.
+
+- **get_expansion_names()**
+  
+  Get a list of all expansion names stored in the MappingArray.
+
+  **Returns:**
+  - **list[str]**: A list of expansion names.
     
 
 ---
@@ -469,17 +499,23 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
 
 ## mapping/mapping_functions.py
 
-- **interpolate_1d(input_array, output_size, original_indices)**
+- **interpolate_1d(input_array, output_size, original_indices, edge_behavior='reflect')**
   
-  Perform 1D interpolation to map input array values to a specified output size.
+  Perform 1D interpolation to map input array values to a specified output size, with user-definable edge behavior.
 
   **Parameters:**
   - **input_array** (np.ndarray): The input array containing values to interpolate.
   - **output_size** (int): The size of the output array.
   - **original_indices** (list[int]): The indices in the output array corresponding to the input array values.
+  - **edge_behavior** (str, optional): Edge behavior when there is no original index at the edge. Options are:
+    - "reflect": (default) Extrapolate at the edges by reflecting the nearest value.
+    - "wrap": Interpolate between the last and first value, wrapping around the array.
 
   **Returns:**
   - **np.ndarray**: The interpolated output array.
+
+  **Raises:**
+  - **ValueError**: If edge_behavior is not 'reflect' or 'wrap'.
 
 - **fill_1d(input_array, output_size, input_value)**
   

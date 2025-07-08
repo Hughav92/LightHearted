@@ -131,7 +131,7 @@ async def hr_reduction(mapping_array: MappingArray) -> None:
     None
     """
     while True:
-        mapping_array.update_array_ticks([np.mean], args=(), kwargs=None, mode="update")
+        mapping_array.update_array_ticks([np.mean], args=[()], kwargs=[{}], mode="update")
         await asyncio.sleep(0)
 
 async def derive_heart_rate_peaks(transformed_dict: dict[str, FIFOBuffer], peak_buffer_dict: dict[str, FIFOBuffer], osc_addresses: list) -> None:
@@ -245,7 +245,7 @@ async def organ_continuous_mapping(lighting_array: LightingArray, mapping_array:
                     "b_kwargs_list": b_kwargs_list,
                 }
         if mapping_array.updated or mapping_changed:
-            mapping_array.spatial_expansion(interpolate_1d, args=(lighting_array.no_leds, lighting_array.get_anchor_positions()), expansion_name="organ")
+            mapping_array.spatial_expansion(interpolate_1d, args_list=[(lighting_array.no_leds, lighting_array.get_anchor_positions(), "reflect")], expansion_name="organ")
             organ_continuous_mapper.apply_mapping("rgb", expansion_name="organ")
             await lighting_array.send_command(
                 ramp_RGB,
@@ -696,7 +696,7 @@ async def set_background(background_buffer_dict: dict[int, FIFOBuffer], backgrou
                 "b_kwargs_list": b_kwargs_list,
                 "w_kwargs_list": w_kwargs_list,
             }
-        background_map.update_array_ticks([identity], args=(), kwargs=None, mode="update")
+        background_map.update_array_ticks([identity], args=[()], kwargs=[{}], mode="update")
         if background_map.updated or mapping_changed:
             background_continuous_mapper.apply_mapping("rgbw")
             await lighting_array.send_command(
