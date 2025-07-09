@@ -9,38 +9,56 @@ from derivation.mapping_array import MappingArray
 
 class ContinuousMapper:
     """
-    A class for mapping derived features from multiple FIFO buffers to a lighting array.
+    Maps a MappingArray to a LightingArray using a configurable chain of functions.
+
+    This class allows you to apply a sequence of transformation functions (with optional arguments) to expansions from a MappingArray, and then update the LightingArray with the result. It supports mapping to different lighting parameters (e.g., intensity, RGB, RGBW) and can use different expansions of the mapping array.
     """
 
-    def __init__(self, mapping_array: MappingArray, lighting_array: LightingArray, functions: dict[str, callable], args: dict[str, dict], kwargs: dict[str, dict]):
+    def __init__(self, mapping_array: MappingArray, lighting_array: LightingArray, functions: list[callable], args_list: list[tuple] = None, kwargs_list: list[dict] = None, output_indices: list[int | None] = None):
         """
-        Initialize the ContinuousMapper with a dictionary of FIFO buffers and a lighting array.
+        Initialize the ContinuousMapper with a MappingArray, LightingArray, and mapping functions.
 
         Parameters
         ----------
-        buffer_dict : dict[str, FIFOBuffer]
-            A dictionary where keys are OSC addresses and values are FIFOBuffers representing the buffers.
+        mapping_array : MappingArray
+            The MappingArray instance containing the data to be mapped.
         lighting_array : LightingArray
-            An instance of LightingArray to map the derived features to.
+            The LightingArray instance to be updated.
+        functions : list[callable]
+            List of mapping functions to apply to the data.
+        args_list : list[tuple], optional
+            List of positional argument tuples for each function.
+        kwargs_list : list[dict], optional
+            List of keyword argument dicts for each function.
+        output_indices : list[int or None], optional
+            List of output indices for each function. If provided, after each function call, the corresponding output index is used.
         """
         self.mapping_array = mapping_array
         self.lighting_array = lighting_array
         self.functions = functions
-        self.args = args
-        self.kwargs = kwargs
+        self.args_list = args_list if args_list is not None else [()] * len(functions)
+        self.kwargs_list = kwargs_list if kwargs_list is not None else [{}] * len(functions)
+        self.output_indices = output_indices if output_indices is not None else [None] * len(functions)
 
-    def set_functions(self, functions: list[callable], args: list[tuple] = None, kwargs: list[dict] = None):
+    def set_functions(self, functions: list[callable], args_list: list[tuple] = None, kwargs_list: list[dict] = None, output_indices: list[int | None] = None):
         """
         Set the mapping functions for the ContinuousMapper.
 
         Parameters
         ----------
-        functions : dict[str, callable]
-            A dictionary where keys are OSC addresses and values are functions to map the derived features.
+        functions : list[callable]
+            List of mapping functions to apply.
+        args_list : list[tuple], optional
+            List of positional argument tuples for each function.
+        kwargs_list : list[dict], optional
+            List of keyword argument dicts for each function.
+        output_indices : list[int or None], optional
+            List of output indices for each function. If provided, after each function call, the corresponding output index is used.
         """
         self.functions = functions
-        self.args = args if args is not None else {}
-        self.kwargs = kwargs if kwargs is not None else {}
+        self.args_list = args_list if args_list is not None else [()] * len(functions)
+        self.kwargs_list = kwargs_list if kwargs_list is not None else [{}] * len(functions)
+        self.output_indices = output_indices if output_indices is not None else [None] * len(functions)
 
     def apply_mapping(self, parameter: str, expansion_name: str = None):
         """
@@ -68,12 +86,15 @@ class ContinuousMapper:
 
         data_out = data
         for i, func in enumerate(self.functions):
-            func_args = self.args[i] if len(self.args) > i else ()
-            func_kwargs = self.kwargs[i] if len(self.kwargs) > i else {}
+            func_args = self.args_list[i] if len(self.args_list) > i else ()
+            func_kwargs = self.kwargs_list[i] if len(self.kwargs_list) > i else {}
+            idx = self.output_indices[i] if len(self.output_indices) > i else None
             if isinstance(data_out, (tuple, list)) and all(isinstance(arr, np.ndarray) for arr in data_out):
                 data_out = tuple(func(arr, *func_args, **func_kwargs) for arr in data_out)
             else:
                 data_out = func(data_out, *func_args, **func_kwargs)
+            if idx is not None and isinstance(data_out, (tuple, list)):
+                data_out = data_out[idx]
         data = data_out
 
         if parameter == "intensity":

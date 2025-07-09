@@ -69,7 +69,7 @@ async def listen_for_commands(tasks: list[asyncio.Task]) -> None:
             loop.stop()
             break
         elif user_input.lower() == 'r':
-            p_csv = Process(target=csv_sim)
+            p_csv = Process(target=csv_sim, kwargs={"column": "Lead 1", "filepath": "../../csv_simulator/csv"}) # Adjust column and filepath as needed
             p_csv.start()
 
 async def transform_signals(ecg_buffer_dict: dict[str, FIFOBuffer], transformed_dict: dict[str, FIFOBuffer], osc_addresses: list) -> None:
@@ -131,7 +131,7 @@ async def hr_reduction(mapping_array: MappingArray) -> None:
     None
     """
     while True:
-        mapping_array.update_array_ticks([np.mean], args=[()], kwargs=[{}], mode="update")
+        mapping_array.update_array_tick([np.mean], args_list=[()], kwargs_list=[{}], mode="update")
         await asyncio.sleep(0)
 
 async def derive_heart_rate_peaks(transformed_dict: dict[str, FIFOBuffer], peak_buffer_dict: dict[str, FIFOBuffer], osc_addresses: list) -> None:
@@ -491,7 +491,7 @@ async def listen_for_organ_key(organ_lighting_array: LightingArray, background_l
             if not organ_triggered:
                 
                 task_organ_continuous_mapping = asyncio.create_task(
-                    organ_continuous_mapping(organ_lighting_array, hr_map, lighting_client)
+                    organ_continuous_mapping(organ_lighting_array, hr_map, lighting_client, functions_container)
                 )
                 task_background_mapping = asyncio.create_task(
                     set_background(background_buffer_dict, background_map, background_lighting_array, lighting_client, functions_container)
@@ -575,7 +575,7 @@ async def listen_for_baluster_key(lighting_arrays: list[LightingArray], hr_map: 
         if keyboard.is_pressed('b'):
             if not baluster_triggered:
                 task_baluster_mappings = [
-                    asyncio.create_task(baluster_continuous_mapping(lighting_array, hr_map, lighting_client))
+                    asyncio.create_task(baluster_continuous_mapping(lighting_array, hr_map, lighting_client, functions_container))
                     for lighting_array in lighting_arrays
                 ]
                 await asyncio.gather(*[
@@ -663,10 +663,12 @@ async def set_background(background_buffer_dict: dict[int, FIFOBuffer], backgrou
     }
 
     while True:
+
         mapping_changed = any(
             functions_container[key] != last_config[key]
             for key in last_config
         )
+
         if mapping_changed:
             r_functions = functions_container["r_functions"]
             g_functions = functions_container["g_functions"]
@@ -683,7 +685,7 @@ async def set_background(background_buffer_dict: dict[int, FIFOBuffer], backgrou
             functions = [range_scaler, dimensionality_expansion, np.clip, range_scaler]
             args = [ (0, 1, mapping_hr_low, mapping_hr_high), (channel_functions, channel_kwargs_list), (0, 1), (0, 100, 0, 1)]
             kwargs = [{}, {}, {}, {}]
-
+            
             background_continuous_mapper.set_functions(functions, args, kwargs)
 
             last_config = {
@@ -696,7 +698,9 @@ async def set_background(background_buffer_dict: dict[int, FIFOBuffer], backgrou
                 "b_kwargs_list": b_kwargs_list,
                 "w_kwargs_list": w_kwargs_list,
             }
-        background_map.update_array_ticks([identity], args=[()], kwargs=[{}], mode="update")
+
+        background_map.update_array_tick([identity], args_list=[()], kwargs_list=[{}], mode="update")
+
         if background_map.updated or mapping_changed:
             background_continuous_mapper.apply_mapping("rgbw")
             await lighting_array.send_command(
@@ -852,6 +856,7 @@ async def main():
             ecg_buffer_dict,
             peak_buffer_dict,
             background_buffer_dict,
+            functions_container,
             lighting_client
         )
     )

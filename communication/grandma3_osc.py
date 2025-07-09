@@ -1,6 +1,5 @@
 import time
 import asyncio
-from config import *
 import sys
 sys.path.append("../")
 from utils.utils import sleep, ramp_value
@@ -103,14 +102,14 @@ async def ramp_RGB(duration: float, step_time: float, fixtures: list, r_start: l
         formatted_string = format_RGB(fixtures, r_values, g_values, b_values)
 
         if client is not None:
-            client.send_message(lighting_address, formatted_string)
+            client.send_message("/cmd", formatted_string)
         else:
             result.append(formatted_string)
 
         await asyncio.sleep(step_time)
 
     if client is not None:
-        client.send_message(lighting_address, formatted_string)
+        client.send_message("/cmd", formatted_string)
     else:
         formatted_string = format_RGB(fixtures, r_end, g_end, b_end)
         result.append(formatted_string)
@@ -164,7 +163,7 @@ def format_RGBW(fixtures: list, r: list = None, g: list = None, b: list = None, 
         result.append(f"{fixture}; {formatted_values};")
 
     if client is not None:
-        client.send_message(lighting_address, "".join(result))
+        client.send_message("/cmd", "".join(result))
     else:
         return "".join(result)
 
@@ -234,14 +233,14 @@ async def ramp_RGBW(
         formatted_string = format_RGBW(fixtures, r_values, g_values, b_values, w_values)
 
         if client is not None:
-            client.send_message(lighting_address, formatted_string)
+            client.send_message("/cmd", formatted_string)
         else:
             result.append(formatted_string)
 
         await asyncio.sleep(step_time)
 
     if client is not None:
-        client.send_message(lighting_address, formatted_string)
+        client.send_message("/cmd", formatted_string)
     else:
         formatted_string = format_RGBW(fixtures, r_end, g_end, b_end, w_end)
         result.append(formatted_string)
@@ -297,7 +296,7 @@ def format_intensity(fixtures: list | np.ndarray | int | float, values: list | n
         formatted_values = ";".join(f'{fixture} At {value}' for fixture, value in zip(fixtures, values))
 
     if client is not None:
-        client.send_message(lighting_address, "".join(formatted_values))
+        client.send_message("/cmd", "".join(formatted_values))
     else:
         return "".join(formatted_values)
 
@@ -357,7 +356,7 @@ async def ramp_intensity(
                 fixtures, [int(x) for x in values_end], concurrent=concurrent
             )
             if client is not None:
-                client.send_message(lighting_address, formatted_string)
+                client.send_message("/cmd", formatted_string)
             else:
                 result.append(formatted_string)
             break
@@ -370,14 +369,14 @@ async def ramp_intensity(
         formatted_string = format_intensity(fixtures, values, concurrent=concurrent)
 
         if client is not None:
-            client.send_message(lighting_address, formatted_string)
+            client.send_message("/cmd", formatted_string)
         else:
             result.append(formatted_string)
 
         await asyncio.sleep(step_time)
 
     if client is not None:
-        client.send_message(lighting_address, formatted_string)
+        client.send_message("/cmd", formatted_string)
     else:
         formatted_string = format_intensity(fixtures, values_end, concurrent=concurrent)
         result.append(formatted_string)

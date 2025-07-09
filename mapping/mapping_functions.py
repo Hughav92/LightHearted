@@ -33,6 +33,11 @@ def interpolate_1d(input_array: np.ndarray, output_size: int, original_indices: 
     input_array = np.array(input_array)
     input_size = len(input_array)
 
+    if output_size < input_size:
+        raise ValueError(f"output_size ({output_size}) must be greater than or equal to the size of input_array ({input_size})")
+    if len(original_indices) != input_size:
+        raise ValueError(f"original_indices must be the same size as input_array (got {len(original_indices)} and {input_size})")
+
     if edge_behaviour == "wrap":
         output_array = np.zeros(output_size)
         for i in range(input_size):

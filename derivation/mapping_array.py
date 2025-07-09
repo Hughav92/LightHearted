@@ -126,7 +126,8 @@ class MappingArray:
                     reduced = reduced[idx]
             if output_index is not None and isinstance(reduced, (tuple, list)):
                 reduced = reduced[output_index]
-
+            if isinstance(reduced, (np.ndarray, list, tuple)) and len(reduced) == 1:
+                reduced = reduced[0]
             if not (isinstance(reduced, (int, float)) and not isinstance(reduced, bool)):
                 raise TypeError(f"Reduced value for key '{key}' must be a single int or float, got {type(reduced)} with value {reduced}")
             self.array[self.position_dict[key]] = reduced
@@ -158,6 +159,7 @@ class MappingArray:
         bool
             True if the array was updated, False otherwise.
         """
+        
         if output_indices is None:
             output_indices = [None] * (len(reduction_functions) if isinstance(reduction_functions, list) else 1)
         n_funcs = len(reduction_functions) if isinstance(reduction_functions, list) else 1

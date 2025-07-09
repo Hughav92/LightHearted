@@ -8,3 +8,13 @@ derivation/__pycache__/transforms.cpython-310.pyc
 mapping/__pycache__/lighting_array.cpython-310.pyc
 mapping/__pycache__/mapping_functions.cpython-310.pyc
 derivation/__pycache__/mapping_array.cpython-310.pyc
+communication/__pycache__/grandma3_osc.cpython-310.pyc
+csv_simulator/__pycache__/csv_simulator.cpython-310.pyc
+csv_simulator/__pycache__/sim_config.cpython-310.pyc
+csv_simulator/csv/aud.csv
+csv_simulator/csv/brs.csv
+csv_simulator/csv/conductor.csv
+csv_simulator/csv/vn1.csv
+derivation/__pycache__/heart_rate.cpython-310.pyc
+examples/ASO25/__pycache__/ASO25_config.cpython-310.pyc
+*.pyc

@@ -256,28 +256,36 @@ A class for handling data from multiple FIFO buffers to be mapped to a lighting 
 
 ### class ContinuousMapper
 
-A class for mapping derived features from a mapping array to a lighting array.
+Maps a MappingArray to a LightingArray using a configurable chain of functions.
 
+This class allows you to apply a sequence of transformation functions (with optional arguments) to expansions from a MappingArray, and then update the LightingArray with the result. It supports mapping to different lighting parameters (e.g., intensity, RGB, RGBW) and can use different expansions of the mapping array.
 
 #### Methods:
-- **__init__(mapping_array, lighting_array, functions, args, kwargs)**
+- **__init__(mapping_array, lighting_array, functions, args_list=None, kwargs_list=None, output_indices=None)**
   
-  Initialize the ContinuousMapper with a dictionary of FIFO buffers and a lighting array.
+  Initialize the ContinuousMapper with a MappingArray, LightingArray, and mapping functions.
 
   **Parameters:**
-  - **buffer_dict** (dict[str, FIFOBuffer]): A dictionary where keys are OSC addresses and values are FIFOBuffers representing the buffers.
-  - **lighting_array** (LightingArray): An instance of LightingArray to map the derived features to.
+  - **mapping_array** (MappingArray): The MappingArray instance containing the data to be mapped.
+  - **lighting_array** (LightingArray): The LightingArray instance to be updated.
+  - **functions** (list[callable]): List of mapping functions to apply to the data.
+  - **args_list** (list[tuple], optional): List of positional argument tuples for each function.
+  - **kwargs_list** (list[dict], optional): List of keyword argument dicts for each function.
+  - **output_indices** (list[int or None], optional): List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
-- **set_functions(functions, args=None, kwargs=None)**
+- **set_functions(functions, args_list=None, kwargs_list=None, output_indices=None)**
   
-  Set the mapping functions for the ContinuousMapper.
+  Set the mapping functions and their arguments.
 
   **Parameters:**
-  - **functions** (dict[str, callable]): A dictionary where keys are OSC addresses and values are functions to map the derived features.
+  - **functions** (list[callable]): List of mapping functions to apply.
+  - **args_list** (list[tuple], optional): List of positional argument tuples for each function.
+  - **kwargs_list** (list[dict], optional): List of keyword argument dicts for each function.
+  - **output_indices** (list[int or None], optional): List of output indices for each function. If provided, after each function call, the corresponding output index is used.
 
 - **apply_mapping(parameter, expansion_name=None)**
   
-  Apply the mapper's functions to the mapping array (or chosen expansion) and set the lighting array.
+  Apply the mapping functions to the data and update the lighting array.
 
   **Parameters:**
   - **parameter** (str): The parameter to set ('intensity', 'red', 'green', 'blue', 'white', 'rgb', 'rgbw').
