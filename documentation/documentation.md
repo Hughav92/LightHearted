@@ -542,13 +542,14 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   **Returns:**
   - **np.ndarray**: An array filled with the specified value.
 
-- **dimensionality_expansion(x, channel_functions, channel_kwargs_list=None)**
+- **dimensionality_expansion(x, channel_functions, channel_args_list=None, channel_kwargs_list=None)**
   
   Perform parametric expansion on an input array using multiple functions for any number of channels (e.g., RGB, RGBW, etc.).
 
   **Parameters:**
   - **x** (np.ndarray): The input array to be expanded.
   - **channel_functions** (list[list[callable]]): A list where each element is a list of functions to be applied to a channel (e.g., [r_funcs, g_funcs, b_funcs, ...]).
+  - **channel_args_list** (list[list[tuple]], optional): A list where each element is a list of positional argument tuples for the corresponding channel's functions. If not provided, defaults to empty tuples for all functions.
   - **channel_kwargs_list** (list[list[dict]], optional): A list where each element is a list of keyword argument dicts for the corresponding channel's functions. If not provided, defaults to empty dicts for all functions.
 
   **Returns:**

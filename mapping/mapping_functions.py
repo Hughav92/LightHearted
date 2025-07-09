@@ -124,7 +124,7 @@ def fill_1d(input_array: np.ndarray, output_size: int, input_value: float) -> np
     """
     return np.full(output_size, input_value)
 
-def dimensionality_expansion(x: np.ndarray, channel_functions: list[list[callable]], channel_kwargs_list: list[list[dict]] = None) -> tuple:
+def dimensionality_expansion(x: np.ndarray, channel_functions: list[list[callable]], channel_args_list: list[list[tuple]] = None, channel_kwargs_list: list[list[dict]] = None) -> tuple:
     """
     Perform parametric expansion on an input array using multiple functions for any number of channels (e.g., RGB, RGBW, etc.).
 
@@ -134,6 +134,9 @@ def dimensionality_expansion(x: np.ndarray, channel_functions: list[list[callabl
         The input array to be expanded.
     channel_functions : list[list[callable]]
         A list where each element is a list of functions to be applied to a channel (e.g., [r_funcs, g_funcs, b_funcs, ...]).
+    channel_args_list : list[list[tuple]], optional
+        A list where each element is a list of positional argument tuples for the corresponding channel's functions.
+        If not provided, defaults to empty tuples for all functions.
     channel_kwargs_list : list[list[dict]], optional
         A list where each element is a list of keyword argument dicts for the corresponding channel's functions.
         If not provided, defaults to empty dicts for all functions.
@@ -146,12 +149,16 @@ def dimensionality_expansion(x: np.ndarray, channel_functions: list[list[callabl
     n_channels = len(channel_functions)
     if channel_kwargs_list is None:
         channel_kwargs_list = [[{}] * len(funcs) for funcs in channel_functions]
+    if channel_args_list is None:
+        channel_args_list = [[()] * len(funcs) for funcs in channel_functions]
 
     for i in range(n_channels):
         if channel_kwargs_list[i] is None or len(channel_kwargs_list[i]) != len(channel_functions[i]):
             channel_kwargs_list[i] = [{}] * len(channel_functions[i])
+        if channel_args_list[i] is None or len(channel_args_list[i]) != len(channel_functions[i]):
+            channel_args_list[i] = [()] * len(channel_functions[i])
 
-    def apply_functions(values: np.ndarray, functions: list[callable], kwargs_list: list[dict]) -> np.ndarray:
+    def apply_functions(values: np.ndarray, functions: list[callable], args_list: list[tuple], kwargs_list: list[dict]) -> np.ndarray:
         values = np.nan_to_num(values, nan=0, posinf=1, neginf=-1)
         for i, func in enumerate(functions):
             range_values = values[np.isfinite(values)]
@@ -161,6 +168,7 @@ def dimensionality_expansion(x: np.ndarray, channel_functions: list[list[callabl
             v_std = np.std(range_values) if range_values.size > 0 else 0
             v_median = np.median(range_values) if range_values.size > 0 else 0
             kwargs = kwargs_list[i] if i < len(kwargs_list) else {}
+            args = args_list[i] if i < len(args_list) else ()
             for key, value in kwargs.items():
                 if value == "min":
                     kwargs[key] = v_min
@@ -172,12 +180,12 @@ def dimensionality_expansion(x: np.ndarray, channel_functions: list[list[callabl
                     kwargs[key] = v_std
                 elif value == "median":
                     kwargs[key] = v_median
-            values = func(values, **kwargs)
+            values = func(values, *args, **kwargs)
             values = np.nan_to_num(values, nan=0, posinf=1, neginf=-1)
         return values
 
     expanded_channels = tuple(
-        apply_functions(x, channel_functions[i], channel_kwargs_list[i])
+        apply_functions(x, channel_functions[i], channel_args_list[i], channel_kwargs_list[i])
         for i in range(n_channels)
     )
     return expanded_channels
