@@ -23,6 +23,7 @@ class MappingArray:
         self._last_update_versions = {key: -1 for key in buffer_dict}
         self._last_update_time = 0
         self.updated = False
+        self.updated_values_dict = {key: False for key in buffer_dict}
         
     def set_positions(self, dict):
         """
@@ -80,6 +81,22 @@ class MappingArray:
         else:
             return np.array([self.array[self.position_dict[key]] for key in keys if key in self.position_dict])
     
+    def updated_values(self, key):
+        """
+        Check if the value for a given key was updated in the last update.
+
+        Parameters
+        ----------
+        key : str
+            The key to check.
+
+        Returns
+        -------
+        bool
+            True if the value was updated, False otherwise.
+        """
+        return self.updated_values_dict.get(key, False)
+
     def update_array(self, reduction_functions, args_list=None, kwargs_list=None, output_index=None, output_indices=None):
         """
         Update the array by applying the same reduction function(s) to all buffers.
@@ -117,6 +134,7 @@ class MappingArray:
             else:
                 raise TypeError(f"Buffer for key '{key}' is not a supported type.")
 
+            prev_value = self.array[self.position_dict[key]]
             for i, func in enumerate(reduction_functions):
                 args = args_list[i] if i < len(args_list) else ()
                 kwargs = kwargs_list[i].copy() if i < len(kwargs_list) else {}
@@ -131,6 +149,7 @@ class MappingArray:
             if not (isinstance(reduced, (int, float)) and not isinstance(reduced, bool)):
                 raise TypeError(f"Reduced value for key '{key}' must be a single int or float, got {type(reduced)} with value {reduced}")
             self.array[self.position_dict[key]] = reduced
+            self.updated_values_dict[key] = not np.isclose(prev_value, reduced)
 
     def update_array_tick(self, reduction_functions, args_list=None, kwargs_list=None, mode="update", interval=1000, output_index=None, output_indices=None):
         """

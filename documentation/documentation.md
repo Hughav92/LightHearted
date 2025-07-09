@@ -187,6 +187,16 @@ A class for handling data from multiple FIFO buffers to be mapped to a lighting 
   **Returns:**
   - **np.ndarray**: The values corresponding to the specified keys.
 
+- **updated_values(key)**
+  
+  Check if the value for a given key was updated in the last update.
+
+  **Parameters:**
+  - **key** (str): The key to check.
+
+  **Returns:**
+  - **bool**: True if the value was updated, False otherwise.
+
 - **update_array(reduction_functions, args_list=None, kwargs_list=None, output_index=None, output_indices=None)**
   
   Update the array by applying the same reduction function(s) to all buffers.

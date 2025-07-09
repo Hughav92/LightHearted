@@ -356,8 +356,8 @@ async def baluster_continuous_mapping(lighting_array: LightingArray, mapping_arr
                     "b_kwargs_list": b_kwargs_list,
                     "w_kwargs_list": w_kwargs_list,
                 }
-        if mapping_array.updated or mapping_changed:
-            mapping_array.spatial_expansion(fill_1d, args=(lighting_array.no_leds, mapping_array.get_values(["/conductor"])), expansion_name="baluster")
+        if mapping_array.updated_values("/conductor") or mapping_changed:
+            mapping_array.spatial_expansion(fill_1d, args_list=[(lighting_array.no_leds, mapping_array.get_values(["/conductor"]))], expansion_name="baluster")
             baluster_continuous_mapper.apply_mapping("rgbw", expansion_name="baluster")
             await lighting_array.send_command(
                 ramp_RGBW,
