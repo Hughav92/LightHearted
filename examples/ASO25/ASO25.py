@@ -10,7 +10,7 @@ Main features:
 - Sends lighting commands (RGB/RGBW ramps) to a lighting client
 - Allows live switching of mapping functions via keyboard
 
-Author: Hugh Alexander von Arnim (RITMO, UiO)
+Author: Anonymised for Submission
 Date: 2025
 
 Dependencies:
