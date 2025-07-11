@@ -833,7 +833,7 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **r** (list, optional): Red channel values.
   - **g** (list, optional): Green channel values.
   - **b** (list, optional): Blue channel values.
-  - **client** (object, optional): OSC client to send the message to.
+  - **client** (object, optional): OSC client to send the message with.
 
   **Returns:**
   - **str**: Formatted string if no client is provided.
@@ -867,7 +867,7 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **g** (list, optional): Green channel values.
   - **b** (list, optional): Blue channel values.
   - **w** (list, optional): White channel values.
-  - **client** (object, optional): OSC client to send the message to.
+  - **client** (object, optional): OSC client to send the message with.
 
   **Returns:**
   - **str**: Formatted string if no client is provided.
@@ -888,7 +888,7 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **b_end** (list, optional): List of ending blue channel values.
   - **w_start** (list, optional): List of starting white channel values.
   - **w_end** (list, optional): List of ending white channel values.
-  - **client** (object, optional): OSC client to send the message to.
+  - **client** (object, optional): OSC client to send the message with.
 
   **Returns:**
   - **str**: Formatted string if no client is provided.
@@ -901,7 +901,7 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **fixtures** (list or np.ndarray or int or float): List of fixture IDs or a single fixture ID.
   - **values** (list or np.ndarray or int or float): List of intensity values or a single intensity value.
   - **concurrent** (bool, optional): Whether to apply the same intensity to all fixtures concurrently. Default is True.
-  - **client** (object, optional): OSC client to send the message to.
+  - **client** (object, optional): OSC client to send the message with.
 
   **Returns:**
   - **str**: Formatted string if no client is provided.
@@ -917,7 +917,7 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **values_start** (list or int or float): List of starting intensity values or a single value to apply to all fixtures.
   - **values_end** (list or int or float): List of ending intensity values or a single value to apply to all fixtures.
   - **concurrent** (bool, optional): Whether to apply the same intensity to all fixtures concurrently. Default is True.
-  - **client** (object, optional): OSC client to send the message to.
+  - **client** (object, optional): OSC client to send the message with.
 
   **Returns:**
   - **str**: Formatted string if no client is provided.
@@ -931,7 +931,7 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **on** (int): The intensity value to set for the "on" state.
   - **off** (int): The intensity value to set for the "off" state.
   - **wait_time** (float): The time in seconds to wait between the "on" and "off" states.
-  - **client** (object): The lighting client to send messages to.
+  - **client** (object): The lighting client to send messages with.
   - **concurrent** (bool, optional): Whether to apply the same intensity to all fixtures concurrently.
   - **off_first** (bool, optional): If True, start with the "off" state.
 
