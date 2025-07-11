@@ -4,6 +4,8 @@ A Python framework for creating real-time lighting designs with ECG signals.
 
 ## Installation
 
+Requires Python 3.10 or higher.
+
 Install the required dependencies:
 
 ```bash
