@@ -5,3 +5,4 @@ osc4py3==1.0.8
 pandas==2.2.3
 python-osc==1.9.0
 scipy==1.15.1
+sifi-bridge-py==1.2.3
