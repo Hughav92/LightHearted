@@ -312,7 +312,7 @@ to actions on a lighting array. Supports a chain of trigger functions.
 
 
 #### Methods:
-- **__init__(reference_buffer, query_buffer, trigger_functions, action_function, ...)**
+- **__init__(reference_buffer, query_buffer, trigger_functions, action_function, trigger_args=None, trigger_kwargs=None, action_args=None, action_kwargs=None)**
   
   Initialize the TriggerMapper.
 
@@ -323,8 +323,8 @@ to actions on a lighting array. Supports a chain of trigger functions.
   - **action_function** (callable): Async function to call when a trigger fires.
   - **trigger_args** (list, optional): List of positional argument tuples for each trigger function.
   - **trigger_kwargs** (list, optional): List of keyword argument dicts for each trigger function.
-  - **action_args** (tuple, optional): Positional arguments for the action function.
-  - **action_kwargs** (dict, optional): Keyword arguments for the action function.
+  - **action_args** (tuple, optional): Positional arguments for the action function. If None, defaults to ().
+  - **action_kwargs** (dict, optional): Keyword arguments for the action function. If None, defaults to {}.
 
 - **set_trigger_functions(trigger_functions, trigger_args=None, trigger_kwargs=None)**
   

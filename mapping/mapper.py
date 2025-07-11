@@ -130,7 +130,7 @@ class TriggerMapper:
         action_function: callable,
         trigger_args: list = None,
         trigger_kwargs: list = None,
-        action_args: tuple = (),
+        action_args: tuple = None,
         action_kwargs: dict = None,
     ):
         """
@@ -171,8 +171,8 @@ class TriggerMapper:
         else:
             self.trigger_kwargs = [trigger_kwargs if trigger_kwargs is not None else {}]
         self.action_function = action_function
-        self.action_args = action_args or ()
-        self.action_kwargs = action_kwargs or {}
+        self.action_args = action_args if action_args is not None else ()
+        self.action_kwargs = action_kwargs if action_kwargs is not None else {}
 
     def set_trigger_functions(self, trigger_functions, trigger_args: list = None, trigger_kwargs: list = None):
         """
@@ -201,7 +201,7 @@ class TriggerMapper:
         else:
             self.trigger_kwargs = [trigger_kwargs if trigger_kwargs is not None else {}]
 
-    def set_action_function(self, action_function: callable, action_args: tuple = (), action_kwargs: dict = None):
+    def set_action_function(self, action_function: callable, action_args: tuple = None, action_kwargs: dict = None):
         """
         Set the action (mapping) function and its arguments.
 
@@ -215,8 +215,8 @@ class TriggerMapper:
             Keyword arguments for the action function.
         """
         self.action_function = action_function
-        self.action_args = action_args or ()
-        self.action_kwargs = action_kwargs or {}
+        self.action_args = action_args if action_args is not None else ()
+        self.action_kwargs = action_kwargs if action_kwargs is not None else {}
 
     async def run(self):
         """
