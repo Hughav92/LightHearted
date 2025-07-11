@@ -409,36 +409,36 @@ def flip_range(x: np.ndarray, min: float, max: float) -> np.ndarray:
 
     return x
     
-class PeakCrossesIndexTrigger:
+class CrossesIndex:
     def __init__(self, index: int):
         self.index = index
         self.previous_dist = None
 
-    async def __call__(self, signal_buffer: np.ndarray | FIFOBuffer, peaks: np.ndarray | FIFOBuffer, auto_index: bool = True) -> bool:
+    async def __call__(self, reference: np.ndarray | FIFOBuffer, query: np.ndarray | FIFOBuffer, auto_index: bool = True) -> bool:
         """
-        Returns True if the minimum distance from any peak to the index is less than the previous minimum distance.
+        Returns True if the minimum distance from any value in the query to the reference index is less than the previous minimum distance.
         """
-        if auto_index and isinstance(signal_buffer, FIFOBuffer):
-            self.index = signal_buffer.centre_index
-        elif auto_index and isinstance(signal_buffer, np.ndarray):
-            self.index = len(signal_buffer) // 2
+        if auto_index and isinstance(reference, FIFOBuffer):
+            self.index = reference.centre_index
+        elif auto_index and isinstance(query, np.ndarray):
+            self.index = len(query) // 2
         else:
             self.index = self.index
 
-        if isinstance(signal_buffer, FIFOBuffer):
-            if signal_buffer.get_size() == 0:
+        if isinstance(reference, FIFOBuffer):
+            if reference.get_size() == 0:
                 return False
-        if isinstance(peaks, FIFOBuffer):
-            if peaks.get_size() == 0:
+        if isinstance(query, FIFOBuffer):
+            if query.get_size() == 0:
                 return False
-        if isinstance(signal_buffer, np.ndarray):
-            if len(signal_buffer) == 0:
+        if isinstance(reference, np.ndarray):
+            if len(reference) == 0:
                 return False
-        if isinstance(peaks, np.ndarray):
-            if len(peaks) == 0:
+        if isinstance(query, np.ndarray):
+            if len(query) == 0:
                 return False
 
-        _, dist = find_nearest(self.index, peaks)
+        _, dist = find_nearest(self.index, query)
         triggered = False
         if dist is not None and dist >= 0:
             if self.previous_dist is not None and dist >= 0 and self.previous_dist <= 0 and dist != self.previous_dist:

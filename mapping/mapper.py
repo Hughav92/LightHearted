@@ -124,9 +124,9 @@ class TriggerMapper:
 
     def __init__(
         self,
-        reference_buffer,
-        query_buffer,
-        trigger_functions,
+        reference_buffer: FIFOBuffer,
+        query_buffer: FIFOBuffer,
+        trigger_functions: list[callable],
         action_function: callable,
         trigger_args: list = None,
         trigger_kwargs: list = None,
@@ -140,8 +140,8 @@ class TriggerMapper:
         ----------
         reference_buffer : FIFOBuffer
             The buffer to use as a reference for triggers (e.g., ECG signal).
-        query_buffer : FIFOBuffer, np.ndarray, or list
-            The buffer or array to use as a query for triggers (e.g., peaks).
+        query_buffer : FIFOBuffer
+            The buffer to use as a query for triggers (e.g., peaks).
         trigger_functions : callable or list[callable]
             A function or list of functions to process the trigger logic. The final function must return a bool.
         action_function : callable

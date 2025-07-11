@@ -396,7 +396,7 @@ async def organ_trigger_mapping(lighting_array: LightingArray, signal_buffers: d
     -------
     None
     """
-    trigger_functions = {key: PeakCrossesIndexTrigger(signal_buffers[key].centre_index) for key in signal_buffers.keys()}
+    trigger_functions = {key: CrossesIndex(signal_buffers[key].centre_index) for key in signal_buffers.keys()}
     action_functions = {key: pulse_intensity for key in signal_buffers.keys()}
     action_args = {key: (lighting_array.anchors[i], 100, 40, 0.1, lighting_client, False) for i, key in enumerate(signal_buffers.keys())}
     trigger_mappers = {key: TriggerMapper(

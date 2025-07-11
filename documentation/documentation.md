@@ -318,7 +318,7 @@ to actions on a lighting array. Supports a chain of trigger functions.
 
   **Parameters:**
   - **reference_buffer** (FIFOBuffer): The buffer to use as a reference for triggers (e.g., ECG signal).
-  - **query_buffer** (FIFOBuffer, np.ndarray, or list): The buffer or array to use as a query for triggers (e.g., peaks).
+  - **query_buffer** (FIFOBuffer): The buffer to use as a query for triggers (e.g., peaks).
   - **trigger_functions** (callable or list[callable]): A function or list of functions to process the trigger logic. The final function must return a bool.
   - **action_function** (callable): Async function to call when a trigger fires.
   - **trigger_args** (list, optional): List of positional argument tuples for each trigger function.
@@ -664,14 +664,14 @@ Supports RGBW color channels, anchor points for mapping, and provides methods to
   - **np.ndarray**: The input array with its range flipped around the center.
     
 
-### class PeakCrossesIndexTrigger
+### class CrossesIndex
 - **__init__(index)**
   
   Initialize with an index.
 
-- **__call__(signal_buffer, peaks, auto_index=True)**
+- **__call__(reference, query, auto_index=True)**
   
-  Returns True if the minimum distance from any peak to the index is less than the previous minimum distance.
+  Returns True if the minimum distance from any value in the query to the reference index is less than the previous minimum distance.
 
 - **update_index(new_index)**
   
