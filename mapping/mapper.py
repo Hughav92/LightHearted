@@ -220,43 +220,53 @@ class TriggerMapper:
 
     async def run(self):
         """
-        Continuously check for triggers and execute actions.
+        Continuously check for triggers and execute actions, only if reference or query buffer has updated.
         """
+        last_ref_version = getattr(self.reference_buffer, '_version', None)
+        last_query_version = getattr(self.query_buffer, '_version', None)
         while True:
-            if hasattr(self.query_buffer, "get_buffer"):
-                query = self.query_buffer.get_buffer()
-            else:
-                query = self.query_buffer
+            ref_version = getattr(self.reference_buffer, '_version', None)
+            query_version = getattr(self.query_buffer, '_version', None)
+            ref_updated = ref_version is not None and ref_version != last_ref_version
+            query_updated = query_version is not None and query_version != last_query_version
 
-            value = (self.reference_buffer, query)
-            for i, func in enumerate(self.trigger_functions):
-                func_args = self.trigger_args[i] if len(self.trigger_args) > i else ()
-                func_kwargs = self.trigger_kwargs[i] if len(self.trigger_kwargs) > i else {}
-                if i == 0:
-                    result = func(*value, *func_args, **func_kwargs)
+            if (ref_version is None and query_version is None) or ref_updated or query_updated:
+                last_ref_version = ref_version
+                last_query_version = query_version
+                if hasattr(self.query_buffer, "get_buffer"):
+                    query = self.query_buffer.get_buffer()
                 else:
-                    result = func(value, *func_args, **func_kwargs)
-                if inspect.isawaitable(result):
-                    result = await result
-                value = result
+                    query = self.query_buffer
+                value = (self.reference_buffer, query)
 
-            trigger_result = value
+                for i, func in enumerate(self.trigger_functions):
+                    func_args = self.trigger_args[i] if len(self.trigger_args) > i else ()
+                    func_kwargs = self.trigger_kwargs[i] if len(self.trigger_kwargs) > i else {}
+                    if i == 0:
+                        result = func(*value, *func_args, **func_kwargs)
+                    else:
+                        result = func(value, *func_args, **func_kwargs)
+                    if inspect.isawaitable(result):
+                        result = await result
+                    value = result
 
-            if not isinstance(trigger_result, bool):
-                raise TypeError(
-                    f"Trigger function chain must return a bool, got {type(trigger_result).__name__}: {trigger_result}"
-                )
+                trigger_result = value
 
-            if trigger_result:
-                if inspect.iscoroutinefunction(self.action_function):
-                    await self.action_function(
-                        *self.action_args,
-                        **self.action_kwargs
+                if not isinstance(trigger_result, bool):
+                    raise TypeError(
+                        f"Trigger function chain must return a bool, got {type(trigger_result).__name__}: {trigger_result}"
                     )
-                else:
-                    self.action_function(
-                        *self.action_args,
-                        **self.action_kwargs
-                    )
+
+                if trigger_result:
+                    if inspect.iscoroutinefunction(self.action_function):
+                        await self.action_function(
+                            *self.action_args,
+                            **self.action_kwargs
+                        )
+                    else:
+                        self.action_function(
+                            *self.action_args,
+                            **self.action_kwargs
+                        )
             await asyncio.sleep(0)
 

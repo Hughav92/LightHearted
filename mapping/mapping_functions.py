@@ -440,8 +440,9 @@ class CrossesIndex:
 
         _, dist = find_nearest(self.index, query)
         triggered = False
-        if dist is not None and dist >= 0:
-            if self.previous_dist is not None and dist >= 0 and self.previous_dist <= 0 and dist != self.previous_dist:
+        if dist is not None:
+            # Only trigger when previous_dist < 0 and dist >= 0 (crossing from left to right)
+            if self.previous_dist is not None and self.previous_dist < 0 and dist >= 0:
                 triggered = True
             self.previous_dist = dist
         else:

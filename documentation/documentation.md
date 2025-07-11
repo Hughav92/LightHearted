@@ -346,7 +346,7 @@ to actions on a lighting array. Supports a chain of trigger functions.
 
 - **run()**
   
-  Continuously check for triggers and execute actions.
+  Continuously check for triggers and execute actions, only if the reference or query buffer has updated.
     
 
 ---
